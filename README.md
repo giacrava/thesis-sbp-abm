@@ -12,6 +12,11 @@ Specify to use pipenv
 ## How to Run
 
 ## Files
+* ``sbp-abm/model.py``: Defines the SBP adoption model itself
+* ``sbp-abm/agents.py``: Defines the Market, Government, Farmer and Farm agents
+* ``sbp-abm/patures.py``: Defines the classes for the types pastures that farms can have (NaturalPasture and SownPermanentPasture)
+
+
 
 ## Authors (+ contacts + aknowledgments?)
 
@@ -20,5 +25,7 @@ Specify to use pipenv
 ## TODO
 
 ## How to expand
-Will be necessary, as how to implement a new type of pasture in the model
+* Add a type of pasture:
+** Add the relative class in the ``sbp-abm/patures.py`` file
+** Add the relative government agent taking care of deciding the policies for it
 
