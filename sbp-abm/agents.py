@@ -7,24 +7,23 @@ Created on Thu May 21 09:45:52 2020
 import mesa
 
 
-class Government(mesa.Agent): #THIS CANNOT BE INSTANTIATED, SO SHOULD BE AN ABASTRACT CLASS
+class Government(mesa.Agent): #IS IT ABSTRACT?
     """
-    Base class for the agents reporting the subsidies available for subsidized
-    pastures
-    
-    Methods
-    ----------  
-    retrieve_subsidy : extract the subsidy for the relative pasture type.
+    Base class for the agents reporting the subsidies available for 
+    subsidized pastures.
+    Should not be instantiated.
         
-
     """   
+    
     def __init__(self, unique_id, model):
-        super().__init__(unique_id, model)
+        # super().__init__(unique_id, model)
+        pass
         
     def retrieve_subsidy(self, subsidies):
         """
-        Extract the subsidy for the relative pasture type.
-        If not available, raise an exception.
+        Called by the Government sub-classes' __init__ method.
+        Extract the subsidy for the relative pasture type. If not available, 
+        raise an exception.
 
         Raises
         ------
@@ -43,7 +42,9 @@ class Government(mesa.Agent): #THIS CANNOT BE INSTANTIATED, SO SHOULD BE AN ABAS
             raise KeyError('Subsidy for '+ self.pasture_type +' not provided.'
                            'Please include them in the "subsidies" dictionary.'
                            )
-        
+            
+    def step(self):
+        pass
        
 class SownPermanentPasturesGovernment(Government):
     """
@@ -78,11 +79,14 @@ class Market(mesa.Agent):
     
     Attributes
     ----------
-
+    
     
     
     """  
-    pass
+    
+    def step(self):
+        pass
+
 
 
 class Farmer(mesa.Agent):

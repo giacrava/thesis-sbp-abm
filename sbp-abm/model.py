@@ -47,20 +47,37 @@ class SBPAdoption(mesa.Model):
         """
 
         super().__init__()
-        self.subsidies = subsidies
         
         self.schedule = mesa.time.RandomActivation
         
         
-        #MAYBE THE FOLLOWING CREATION SHOULD BE MOVED TO METHODS
-        
-        #Create dictionary of agents resposible for the subsidies
+        # Create agents
+
+        self.__create_governments(subsidies)
+        self.__create_pastures()        
+        self.market = agents.Market(self.next_id(), self)
+
+            # Create farmers and add them to the scheduler
+            # Create farms and link them to the farmers and their pasture
+            
+    def __create_governments(self, subsidies):
+        """
+        Called by the __init__ method.
+        Creates the attribute psature_governments.
+
+        """     
         self.pasture_governments = {}
         for government_subclass in agents.Government.__subclasses__():
             obj = government_subclass(self.next_id(), self, subsidies)
             self.pasture_governments[obj.pasture_type] = obj
-        
-        #Create lists of pastures (possible to have and adoptable)
+    
+    def __create_pastures(self):
+        """
+        Called by the __init__ method.
+        Creates the attributes possible_pastures and adoptable_pastures.
+
+        """
+              
         self.possible_pastures = []
         for pasture_type in pastures.Pasture.__subclasses__():
             self.possible_pastures.append(pasture_type(self))
@@ -71,24 +88,19 @@ class SBPAdoption(mesa.Model):
             ]
         
         
-        # Create agents
-        # self.market = agents.Market(self.next_id(), self)
 
         
-            # Create farmers and add them to the scheduler
-            # Create farms and link them to the farmers and their pasture
         
+    # def create_agents():
+    #     """
         
-        def create_agents():
-            """
-            
 
-            Returns
-            -------
-            None.
+    #     Returns
+    #     -------
+    #     None.
 
-            """
-            pass
+    #     """
+    #     pass
 
         
         
@@ -101,7 +113,10 @@ class SBPAdoption(mesa.Model):
         None.
 
         """
-        #step of the market
+        self.market.step()
+        for government in self.pasture_governments.values():
+            government.step()
+        print("step!")
         #step of the government
         #schedule step
     
