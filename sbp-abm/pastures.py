@@ -8,16 +8,12 @@ import abc
 
 class Pasture(abc.ABC):
     """
-    Abstract class for general type of pasture
-    
-    Attributes
-    ----------
-    
+    Base abstract class for pasture types.
     
     """   
     
-    def __init__(self): #to implement in the next ones?
-        pass
+    def __init__(self, model):
+        self.model = model
     
     @abc.abstractmethod
     def NPV_adoption(self):
@@ -38,8 +34,32 @@ class NaturalPasture(Pasture):
 
 
 class SownPermanentPasture(Pasture):
+    """
+    Class to create sown permanent pastures.
     
+    Attributes
+    ----------
+    government: SownPermanentPasturesGovernment object
+        Agent responsible to report the subsidy for sown permanent pastures.
+        
+    Methods
+    ----------  
+    NPV_adoption : 
+    
+    NPV_keeping : passed 
+    
+    """  
+    
+    def __init__(self, model):
+        """
+        
 
+        """
+        super().__init__(model)
+        #self.age
+        self.government = self.model.pasture_governments[
+        'Sown Permanent Pasture']
+    
     def NPV_adoption(self):
         pass
     

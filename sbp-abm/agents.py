@@ -7,31 +7,68 @@ Created on Thu May 21 09:45:52 2020
 import mesa
 
 
-class Government(mesa.Agent):
+class Government(mesa.Agent): #THIS CANNOT BE INSTANTIATED, SO SHOULD BE AN ABASTRACT CLASS
     """
-    Agent reporting the subsidies available for different pastures
+    Base class for the agents reporting the subsidies available for subsidized
+    pastures
+    
+    Methods
+    ----------  
+    retrieve_subsidy : extract the subsidy for the relative pasture type.
+        
+
+    """   
+    def __init__(self, unique_id, model):
+        super().__init__(unique_id, model)
+        
+    def retrieve_subsidy(self, subsidies):
+        """
+        Extract the subsidy for the relative pasture type.
+        If not available, raise an exception.
+
+        Raises
+        ------
+        KeyError
+            Raised if the subsidy dictionary does not have a key corresponding 
+            to the Pasture instance's attribute pasture_type
+
+        Returns
+        -------
+        None.
+
+        """
+        try:
+            self.subsidy = subsidies[self.pasture_type]
+        except KeyError:
+            raise KeyError('Subsidy for '+ self.pasture_type +' not provided.'
+                           'Please include them in the "subsidies" dictionary.'
+                           )
+        
+       
+class SownPermanentPasturesGovernment(Government):
+    """
+    Agent reporting the subsidies regarding Sown Permanent Pastures
     
     Attributes
     ----------
-    possible_pastures: list of instances
-        List of the pastures that each farm can have
-    
-    
-    """   
-    def __init__(self, unique_id, model):
+    subsidy : dict
+        Report the subsidy for adoption from 2009 to 2014
+        
+    """       
+    def __init__(self, unique_id, model, subsidies):
         """
+        Initialize a SownPermanentPasturesGovernment object, retrieving the 
+        relative subsidy policy.
 
         Parameters
         ----------
-
-        sbp_subsidy : dictionary
-            Subsidies given to farmers for adoption of SBP in €/ha for each 
-            year ACTUALLY IF WE ARE NOT CONSIDERING THE YEARS, CAN JUST BE 
-            A LIST STARTING FROM YEAR 0 AND EACH YEAR INCREMENTING
+        subsidies : dict
+            Maps each pasture type to the realtive subsidy
 
         """
         super().__init__(unique_id, model)
-        # self.sbp_subsidy = sbp_subsidy   ## INPUT VALUES MANUALLY
+        self.pasture_type = 'Sown Permanent Pasture'
+        self.retrieve_subsidy(subsidies)
         
 
 class Market(mesa.Agent):
@@ -41,7 +78,7 @@ class Market(mesa.Agent):
     
     Attributes
     ----------
-    :
+
     
     
     """  

@@ -5,7 +5,7 @@ Created on Thu May 21 09:45:34 2020
 @author: giaco
 """
 
-import inspect
+
 
 import mesa
 import mesa.time
@@ -20,37 +20,50 @@ class SBPAdoption(mesa.Model):
     
     Attributes
     ----------
-    possible_pastures: list of instances
-        List of the pastures that each farm can have
+    subsidies : dict
+        Maps each pasture type to the realtive subsidy
     
-    adoptable_pasture: list of instances
-        List of the pastures that each farmer consider to adopt (if not
-        already adopted in the farm)
+    pasture_governments : dict
+        Maps subsidized pasture types to the relative agent responsible for 
+        reporting the subsidies
+    
+    possible_pastures : list
+        Pastures that each farm can have
+    
+    adoptable_pasture : list
+        Pastures that each farmer considers for adoption (if not already 
+        adopted in the farm)
     
     """   
-    def __init__(self):
+    def __init__(self, subsidies):
         """
-        
+        Initalization of the model.
 
         Parameters
         ----------
-        sbp_subsidy : dictionary
-            Subsidies given to farmers for adoption of SBP in €/ha for each 
-            year 
-
-
+        subsidies : dict
+            Maps each pasture type to the realtive subsidy
+            
         """
 
         super().__init__()
+        self.subsidies = subsidies
         
         self.schedule = mesa.time.RandomActivation
         
         
+        #MAYBE THE FOLLOWING CREATION SHOULD BE MOVED TO METHODS
+        
+        #Create dictionary of agents resposible for the subsidies
+        self.pasture_governments = {}
+        for government_subclass in agents.Government.__subclasses__():
+            obj = government_subclass(self.next_id(), self, subsidies)
+            self.pasture_governments[obj.pasture_type] = obj
+        
         #Create lists of pastures (possible to have and adoptable)
         self.possible_pastures = []
-        for __,obj in inspect.getmembers(pastures):
-            if inspect.isclass(obj) and obj != pastures.Pasture:
-                self.possible_pastures.append(obj()) 
+        for pasture_type in pastures.Pasture.__subclasses__():
+            self.possible_pastures.append(pasture_type(self))
         
         self.adoptable_pastures = [
             pasture for pasture in self.possible_pastures 
@@ -59,12 +72,11 @@ class SBPAdoption(mesa.Model):
         
         
         # Create agents
-        self.market = agents.Market(self.next_id(),self)
-        self.government = agents.Government(self.next_id(), self)
+        # self.market = agents.Market(self.next_id(), self)
+
         
             # Create farmers and add them to the scheduler
             # Create farms and link them to the farmers and their pasture
-        
         
         
         def create_agents():
