@@ -9,8 +9,8 @@ import model
 
 # pastures = ['Natural Pasture', 'Sown Permanent Pasture']
 
-# Give subsidies in €/hectare
-sbp_subsidy = {
+# Give payments in €/hectare # WULL HAVE TO CONSIDER FOR HOW MANY YEARS
+sbp_payment = {
     '2009': 50,
     '2010': 75,
     '2011': 75,
@@ -19,9 +19,9 @@ sbp_subsidy = {
     '2014': 75,
     }
 
-subsidies = {'Sown Permanent Pasture' : sbp_subsidy}
+payments = {'Sown Permanent Pasture' : sbp_payment}
 
-model = model.SBPAdoption(subsidies)
+model = model.SBPAdoption(payments)
 model.step()
 
 

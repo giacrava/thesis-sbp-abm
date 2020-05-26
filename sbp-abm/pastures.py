@@ -40,7 +40,7 @@ class SownPermanentPasture(Pasture):
     Attributes
     ----------
     government: SownPermanentPasturesGovernment object
-        Agent responsible to report the subsidy for sown permanent pastures.
+        Agent responsible to report the payments for sown permanent pastures.
         
     Methods
     ----------  
@@ -58,9 +58,15 @@ class SownPermanentPasture(Pasture):
         super().__init__(model)
         #self.age
         self.government = self.model.pasture_governments[
-        'Sown Permanent Pasture']
+            'Sown Permanent Pasture']
     
     def NPV_adoption(self):
+        
+        # Calculate initial investment
+        # Calculate yearly revenues (not including only PCF support)
+        # Calculate yearly costs
+        # Retrieve payments for adoption by PCF
+        # Calculate NPV as Revenues + PCF_subs - costs 
         pass
     
     def NPV_keeping(self):

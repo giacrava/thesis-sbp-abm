@@ -9,8 +9,8 @@ import mesa
 
 class Government(mesa.Agent): #IS IT ABSTRACT?
     """
-    Base class for the agents reporting the subsidies available for 
-    subsidized pastures.
+    Base class for the agents reporting payments for ecosystem services from 
+    pastures.
     Should not be instantiated.
         
     """   
@@ -19,17 +19,17 @@ class Government(mesa.Agent): #IS IT ABSTRACT?
         # super().__init__(unique_id, model)
         pass
         
-    def retrieve_subsidy(self, subsidies):
+    def retrieve_subsidy(self, payments):
         """
         Called by the Government sub-classes' __init__ method.
-        Extract the subsidy for the relative pasture type. If not available, 
+        Extract the payments for the relative pasture type. If not available, 
         raise an exception.
 
         Raises
         ------
         KeyError
-            Raised if the subsidy dictionary does not have a key corresponding 
-            to the Pasture instance's attribute pasture_type
+            Raised if the "payments" dictionary does not have a key 
+            corresponding to the Pasture instance's attribute pasture_type
 
         Returns
         -------
@@ -37,10 +37,10 @@ class Government(mesa.Agent): #IS IT ABSTRACT?
 
         """
         try:
-            self.subsidy = subsidies[self.pasture_type]
+            self.payment = payments[self.pasture_type]
         except KeyError:
-            raise KeyError('Subsidy for '+ self.pasture_type +' not provided.'
-                           'Please include them in the "subsidies" dictionary.'
+            raise KeyError('Payment for '+ self.pasture_type +' not provided.'
+                           'Please include them in the "payments" dictionary.'
                            )
             
     def step(self):
@@ -48,23 +48,23 @@ class Government(mesa.Agent): #IS IT ABSTRACT?
        
 class SownPermanentPasturesGovernment(Government):
     """
-    Agent reporting the subsidies regarding Sown Permanent Pastures
+    Agent reporting the payments regarding Sown Permanent Pastures
     
     Attributes
     ----------
-    subsidy : dict
-        Report the subsidy for adoption from 2009 to 2014
+    payment : dict
+        Report the payment for adoption from 2009 to 2014
         
     """       
     def __init__(self, unique_id, model, subsidies):
         """
         Initialize a SownPermanentPasturesGovernment object, retrieving the 
-        relative subsidy policy.
+        relative payment for ecosystem services.
 
         Parameters
         ----------
         subsidies : dict
-            Maps each pasture type to the realtive subsidy
+            Maps each pasture type to the relative payment
 
         """
         super().__init__(unique_id, model)

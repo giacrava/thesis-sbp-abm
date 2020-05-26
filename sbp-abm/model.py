@@ -20,12 +20,12 @@ class SBPAdoption(mesa.Model):
     
     Attributes
     ----------
-    subsidies : dict
-        Maps each pasture type to the realtive subsidy
+    payments : dict
+        Maps each pasture type to the relative payment
     
     pasture_governments : dict
         Maps subsidized pasture types to the relative agent responsible for 
-        reporting the subsidies
+        reporting the payments for ecosystem services
     
     possible_pastures : list
         Pastures that each farm can have
@@ -35,14 +35,14 @@ class SBPAdoption(mesa.Model):
         adopted in the farm)
     
     """   
-    def __init__(self, subsidies):
+    def __init__(self, payments):
         """
         Initalization of the model.
 
         Parameters
         ----------
-        subsidies : dict
-            Maps each pasture type to the realtive subsidy
+        payments : dict
+            Maps each pasture type to the realtive payment
             
         """
 
@@ -53,14 +53,14 @@ class SBPAdoption(mesa.Model):
         
         # Create agents
 
-        self.__create_governments(subsidies)
+        self.__create_governments(payments)
         self.__create_pastures()        
         self.market = agents.Market(self.next_id(), self)
 
             # Create farmers and add them to the scheduler
             # Create farms and link them to the farmers and their pasture
             
-    def __create_governments(self, subsidies):
+    def __create_governments(self, payments):
         """
         Called by the __init__ method.
         Creates the attribute psature_governments.
@@ -68,7 +68,7 @@ class SBPAdoption(mesa.Model):
         """     
         self.pasture_governments = {}
         for government_subclass in agents.Government.__subclasses__():
-            obj = government_subclass(self.next_id(), self, subsidies)
+            obj = government_subclass(self.next_id(), self, payments)
             self.pasture_governments[obj.pasture_type] = obj
     
     def __create_pastures(self):
