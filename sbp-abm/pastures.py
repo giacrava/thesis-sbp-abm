@@ -60,6 +60,12 @@ class SownPermanentPasture(Pasture):
         self.government = self.model.pasture_governments[
             'Sown Permanent Pasture']
     
+    def step(self):
+        
+        # Increment the age of the farm
+        # If age = 10, switch to natural
+        pass
+    
     def NPV_adoption(self):
         
         # Calculate initial investment

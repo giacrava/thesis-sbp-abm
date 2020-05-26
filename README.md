@@ -11,6 +11,8 @@ Specify to use pipenv
 
 ## How to Run
 
+Here also a section on the databases, how do they have to be constructed
+
 ## Files
 * ``sbp-abm/model.py``: Defines the SBP adoption model itself
 * ``sbp-abm/agents.py``: Defines the Market, Government, Farmer and Farm agents

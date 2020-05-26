@@ -88,11 +88,82 @@ class Market(mesa.Agent):
         pass
 
 
+class Municipality(mesa.Agent): ## Can define an agents to have unique_id, but NO ADD TO THE
+            ## SCHEDULER! 
+    """
+    Agent representing the market, from where farmers access prices and
+    economic values
+    
+    Attributes
+    ----------
+    
+    
+    
+    """   
+    pass
+
 
 class Farmer(mesa.Agent):
-    pass
-
+    """
+    Class for the farmer agents.
+    
+    Farmers:
+        - own a farm
+        - their step method is directly called by the model's schedule at each
+          model step
+    
+    Attributes
+    ----------
+    code : str
+        ID of the farmer in the farmers excel database    
+    
+    
+    """  
+    def __init__(self, unique_id, model, farmer_data):
+        super().__init__(unique_id, model)
+        self.code = farmer_data.name
+        self.farm = None
+        
+    def step(self):
+        pass
 
 class Farm(mesa.Agent): ## Can define an agents to have unique_id, but NO ADD TO THE
-            ## SCHEDULER! 
-    pass
+            ## SCHEDULER!
+    """
+    Class for the farm objects.
+    
+    Farms:
+        - are owned by a farmer
+        - have one and only one type of pasture
+        - are in a municipality
+    
+    Attributes
+    ----------
+    code : str
+        ID of the farm in the farms excel database
+    
+    municipality :
+        
+    pasture_type : 
+    
+    
+    """  
+    def __init__(self, unique_id, model, farm_data):
+        """
+        
+
+        Parameters
+        ----------
+        farm_data : pandas series
+            Series 
+
+        """
+        super().__init__(unique_id, model)
+        self.code = farm_data.name
+        self.municipality = farm_data['Municipality'] ## HERE CAN BE IMPLEMENTED CONTROL MUNICIPALITY IN THE LIST / OR WE CAN HAVE ALREADY THE DATAFRAME POINTING AT THE OBJECTS
+        # self.pasture_area = ## DEPEND HOW WE CONSIDER AREAS
+        # self.pasture_type = ## SAME FOR PASTURES
+        self.owner = None
+        
+ 
+        
