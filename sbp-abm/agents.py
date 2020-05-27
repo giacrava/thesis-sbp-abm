@@ -19,7 +19,7 @@ class Government(mesa.Agent): #IS IT ABSTRACT?
         # super().__init__(unique_id, model)
         pass
         
-    def retrieve_subsidy(self, payments):
+    def _retrieve_subsidy(self, payments):
         """
         Called by the Government sub-classes' __init__ method.
         Extract the payments for the relative pasture type. If not available, 
@@ -32,12 +32,14 @@ class Government(mesa.Agent): #IS IT ABSTRACT?
             corresponding to the Pasture instance's attribute pasture_type
 
         Returns
-        -------
-        None.
-
+        ------
+        dict
+            Payment relative to the pasture type the Government subclass deals
+            with
+        
         """
         try:
-            self.payment = payments[self.pasture_type]
+            return payments[self.pasture_type]
         except KeyError:
             raise KeyError('Payment for '+ self.pasture_type +' not provided.'
                            'Please include them in the "payments" dictionary.'
@@ -69,7 +71,7 @@ class SownPermanentPasturesGovernment(Government):
         """
         super().__init__(unique_id, model)
         self.pasture_type = 'Sown Permanent Pasture'
-        self.retrieve_subsidy(subsidies)
+        self.payment = self._retrieve_subsidy(subsidies)
         
 
 class Market(mesa.Agent):
@@ -81,22 +83,19 @@ class Market(mesa.Agent):
     ----------
     
     
-    
     """  
     
     def step(self):
         pass
 
 
-class Municipality(mesa.Agent): ## Can define an agents to have unique_id, but NO ADD TO THE
-            ## SCHEDULER! 
+class Municipality(mesa.Agent):
     """
     Agent representing the market, from where farmers access prices and
     economic values
     
     Attributes
     ----------
-    
     
     
     """   
@@ -109,26 +108,42 @@ class Farmer(mesa.Agent):
     
     Farmers:
         - own a farm
-        - their step method is directly called by the model's schedule at each
-          model step
+        - have a step method that is directly called by the model's schedule at 
+          each model step
     
     Attributes
     ----------
     code : str
         ID of the farmer in the farmers excel database    
-    
+    farm : Farm object
+        Farm that the farmer owns
+        
+    Methods
+    ----------   
+    step
     
     """  
     def __init__(self, unique_id, model, farmer_data):
+        """
+        Parameters
+        ----------
+        farmer_data : pandas Series
+            Contains the data of the farmers, contained in the relative row of
+            the farmers excel database.
+
+        Returns
+        -------
+        None.
+
+        """
         super().__init__(unique_id, model)
         self.code = farmer_data.name
         self.farm = None
         
     def step(self):
-        pass
+        print("Farmer step")
 
-class Farm(mesa.Agent): ## Can define an agents to have unique_id, but NO ADD TO THE
-            ## SCHEDULER!
+class Farm(mesa.Agent):
     """
     Class for the farm objects.
     
@@ -140,30 +155,38 @@ class Farm(mesa.Agent): ## Can define an agents to have unique_id, but NO ADD TO
     Attributes
     ----------
     code : str
-        ID of the farm in the farms excel database
-    
-    municipality :
+        ID of the farm in the farms excel database    
+    pasture_type : Pasture object
+        The pasture that the farm is adopting
+    municipality : Municipality object
+        The municipality where the farm is
+    farmer : Farmer object
+        The farmer that owns the farm
         
-    pasture_type : 
-    
+    Methods
+    ---------- 
+    step
     
     """  
     def __init__(self, unique_id, model, farm_data):
         """
-        
-
         Parameters
         ----------
-        farm_data : pandas series
-            Series 
+        farm_data : pandas Series
+            Contains the data of the farms, contained in the relative row of
+            the farms excel database.
 
         """
         super().__init__(unique_id, model)
         self.code = farm_data.name
-        self.municipality = farm_data['Municipality'] ## HERE CAN BE IMPLEMENTED CONTROL MUNICIPALITY IN THE LIST / OR WE CAN HAVE ALREADY THE DATAFRAME POINTING AT THE OBJECTS
+        
         # self.pasture_area = ## DEPEND HOW WE CONSIDER AREAS
-        # self.pasture_type = ## SAME FOR PASTURES
-        self.owner = None
+        self.pasture_type = farm_data['Pasture']
+        # self.municipality = farm_data['Municipality']
+        self.farmer = None
+        
+    def step(self):
+        pass
         
  
         

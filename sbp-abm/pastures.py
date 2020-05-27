@@ -26,6 +26,14 @@ class Pasture(abc.ABC):
 
 class NaturalPasture(Pasture):
     
+    def __init__(self, model):
+        """
+        
+
+        """
+        super().__init__(model)
+        self.pasture_type = 'Natural Pasture'
+    
     def NPV_adoption(self):
         pass
     
@@ -57,8 +65,8 @@ class SownPermanentPasture(Pasture):
         """
         super().__init__(model)
         #self.age
-        self.government = self.model.pasture_governments[
-            'Sown Permanent Pasture']
+        self.pasture_type = 'Sown Permanent Pasture'
+        self.government = self.model.pasture_governments[self.pasture_type]
     
     def step(self):
         

@@ -21,24 +21,22 @@ class SBPAdoption(mesa.Model):
     Attributes
     ----------
     farmers_data : pd dataframe
-        Farmers data retrieved from excel file
-        
+        Farmers data retrieved from excel file        
     farmers_data : pd dataframe
-        Farms data retrieved from excel file        
-    
+        Farms data retrieved from excel file            
     market : Market object
-        Agent keeping the economic variables
-    
+        Agent keeping the economic variables    
     pasture_governments : dict
-        Maps subsidized pasture types to the relative agent responsible for 
-        reporting the payments for ecosystem services
-    
+        Maps pastures to the relative agent responsible for reporting the 
+        payments for ecosystem services (if any)   
     possible_pastures : list
-        Pastures that each farm can have
-    
+        Pasture objects that each farm can have    
     adoptable_pasture : list
-        Pastures that each farmer considers for adoption (if not already 
-        adopted in the farm)
+        Pasture objects that each farmer considers for adoption (if not already 
+        adopted in the farm)       
+    pastures_mapping : dict
+        Maps each string in the "Pasture" column of the farms excel 
+        database to the relative Pasture object.
     
     """   
     def __init__(self, farmers_data, farms_data, payments):
@@ -49,12 +47,10 @@ class SBPAdoption(mesa.Model):
         ----------
         farmers_data : str
             Path to the excel file with the farmers data. Cannot have
-            multiple rows referring to the same farmer (i.e. with the same ID).
-        
+            multiple rows referring to the same farmer (i.e. with the same ID)        
         farmers_data : str
             Path to the excel file with the farms data. There has to be at
-            least one farm per each farmer and the ID columns have to match.
-        
+            least one farm per each farmer and the ID columns have to match      
         payments : dict
             Maps each pasture type to the realtive payment
             
@@ -64,19 +60,29 @@ class SBPAdoption(mesa.Model):
         
         self.farmers_data = farmers_data
         self.farms_data = farms_data
-        self.market = None     ## DEFINE ALL AND THEN REDIFINE AFTER IN AGENT CREATION?
-        self.pasture_governments = {}
+        
+        self.pasture_governments = self.__create_governments(payments)
+        self.market = agents.Market(self.next_id(), self)
+        
+        # Pastures instantiation
         self.possible_pastures = []
         self.adoptable_pastures = [] 
+        self.pastures_mapping = {}
+        self.__create_pastures()
+        
+        ## MUNICIPALITIES
+        ## Create municipalities and also list of municipalities string (to give
+        ## to the replace_string_with_objects function after merging in a dict)
         
         self.schedule = mesa.time.RandomActivation(self)
+    
+        # Farmers and farms instantiation
+        self.__replace_strings_with_objects(self.farms_data,                                                             
+                                           'Pasture',
+                                           self.pastures_mapping)
         
-        # Create agents and objects
-        self.market = agents.Market(self.next_id(), self)
-        self.__create_governments(payments)
-        self.__create_pastures()     
+        ## Same for municipalities
         self.__create_farmers_and_farms(self.farmers_data, self.farms_data)
-        
         
         
     @property
@@ -93,15 +99,19 @@ class SBPAdoption(mesa.Model):
 
         """
         farmers_dataframe = pd.read_excel(farmers_data, index_col = 0)
-        # farmers_dataframe = farmers_dataframe.dropna(how='all') ## TO REINTRODUCE WHEN
-        ## FARMERS WILL HAVE AN ATTRIBUTE, OTERWISE CONSIDERS ALL LINES AS EMPTY AND DROPS
-        ## EVERYTHING
+        
+        ## TO REINTRODUCE WHEN FARMERS WILL HAVE AN ATTRIBUTE, OTERWISE CONSIDERS ALL
+        ## LINES AS EMPTY AND DROPS EVERYTHING
+        # farmers_dataframe = farmers_dataframe.dropna(how='all') 
+        # if farmers_dataframe.isnull().values.any():
+            # raise ValueError('The farmers excel database has some missing values'
+            #                  '. Please fill in the right values or remove the '
+            #                  'farmer and the relative farm from the database.')
+        
         farmers_id = farmers_dataframe.index
         
         duplicated_farmers_id = farmers_id[farmers_id.duplicated()].unique()
         if not duplicated_farmers_id.empty:
-            
-            ## IS VALUE ERROR THE RIGHT ERROR? Also for the farms_data setter
             raise ValueError('The farmers dataset has multiple rows with the ' 
                              'following ID values: ' + 
                              ', '.join(duplicated_farmers_id.values))                                
@@ -120,20 +130,23 @@ class SBPAdoption(mesa.Model):
         municipalities columns strings with the respective objects.
         
         Checks:
-            Ignores, if present, blank lines from the excel file.
+            Ignores, if present, blank lines from the excel file
             Check that the farms_data excel file:
                 - Doesn't have multiple rows referring to the same farmer (i.e. 
                   with the same ID).
                 - Has exactly the same indexes (i.e.IDs) as the farmers_data 
                   excel. Otherwise, raises a ValueError exception.
-            Check if all the pasture types and the municipalities are correctly
-            spelled.
         
         """        
         farms_dataframe = pd.read_excel(farms_data, index_col = 0)
-        farms_dataframe = farms_dataframe.dropna(how='all')
-        farms_id = farms_dataframe.index
         
+        farms_dataframe = farms_dataframe.dropna(how='all')
+        if farms_dataframe.isnull().values.any():
+            raise ValueError('The farms excel database has some missing values'
+                             '. Please fill in the right values or remove the '
+                             'farm and the relative farmer from the database.')
+        
+        farms_id = farms_dataframe.index
         duplicated_farms_id = farms_id[farms_id.duplicated()].unique()
         if not duplicated_farms_id.empty:
             raise ValueError('The farms dataset has multiple rows with the ' 
@@ -164,53 +177,71 @@ class SBPAdoption(mesa.Model):
         else:
             self._farms_data = farms_dataframe
                 
-    # def switch_strings_with_objects(self, mapping, series):
-    #     """
-    #     Called by the ...
-    #     Replace in the given series the strings with the relative object 
-    #     through a dictionary mapping them.
+    @staticmethod
+    def __replace_strings_with_objects(dataframe, column, mapping):
+        """
+        Called by the __init__ method.
+        
+        Replace in the specified column of the dataframe each string with the 
+        relative object, as specified in the mapping dictionary.
+        Check that the there are no more strings in the column specified.
 
-    #     Parameters
-    #     ----------
-    #     mapping : dict
-    #         Maps each string to the object that we want to replace it with
-    #     series : pandas series
-    #         Series in which the replacement has to take place
+        Parameters
+        ----------
+        dataframe : pandas dataframe
+            Dataframe to which the column belongs.
+        column : str
+            Name of the column we want to replace the strings.
+        mapping : dict
+            Map each string value to the relative object.
 
-    #     Returns
-    #     -------
-    #     pandas series
-    #         A series with the objects instead of the strings
+        Raises
+        ------
+        ValueError
+            Raised when in the column there are strings not linked to any
+            object in the mapping dict. 
 
-    #     """
-    ## I COULD USE THE REPLACE METHOD INSIDE THIS FUNCTION, AND AT THE SAME TIME
-    ## CHECK THAT AT THE END THERE NOT ANYMORE STRINGS AND IN CASE PRINT THEM 
-    ## RAISING AN EXCEPTION. otherwise, call the replace in the main function 
-    ## and just implement a method for checking
-    #     series_copy = series[:]
-    #     for index in range(len(series_copy)):
-    #         series_copy.iloc[index] = mapping[series_copy.iloc[index]]
-    #     return series_copy
-                                              
-            
+        """
+
+        strings = list(mapping.keys())
+        objects = list(mapping.values())
+        column_to_modify = dataframe[column]
+        column_to_modify.replace(to_replace = strings, 
+                                  value = objects, 
+                                  inplace = True)
+        
+        wrong_strings = [entry for entry in column_to_modify 
+                         if type(entry) == str]
+        if wrong_strings:
+            raise ValueError('The column ' + column + ' in the excel databases'
+                             ' contains the following wrong entries: ' + 
+                             ", ".join(wrong_strings))
+        
     def __create_governments(self, payments):
         """
         Called by the __init__ method.
-        Creates the attribute psature_governments.
+        
+        Instantiate the Government subclasses and create the dictionary
+        pasture_governments.
 
         """     
+        pasture_governments = {}
         for government_subclass in agents.Government.__subclasses__():
             obj = government_subclass(self.next_id(), self, payments)
-            self.pasture_governments[obj.pasture_type] = obj
+            pasture_governments[obj.pasture_type] = obj
+        return pasture_governments
     
     def __create_pastures(self):
         """
         Called by the __init__ method.
+        
         Creates the attributes possible_pastures and adoptable_pastures.
 
         """              
-        for pasture_type in pastures.Pasture.__subclasses__():
-            self.possible_pastures.append(pasture_type(self))
+        for pasture_class in pastures.Pasture.__subclasses__():
+            pasture_object = pasture_class(self)
+            self.possible_pastures.append(pasture_object)
+            self.pastures_mapping[pasture_object.pasture_type] = pasture_object
         
         self.adoptable_pastures = [
             pasture for pasture in self.possible_pastures 
@@ -219,7 +250,8 @@ class SBPAdoption(mesa.Model):
         
     def __create_farmers_and_farms(self, farmers_data, farms_data):
         """
-        Called by the __init__ method.           
+        Called by the __init__ method.   
+        
         Creates farmers and add them to the scheduler.
         Creates farms.
         Links farms and farmers.
@@ -230,8 +262,11 @@ class SBPAdoption(mesa.Model):
             self.schedule.add(farmer)
             farm = agents.Farm(self.next_id(), self, farms_data.loc[id_])
             farmer.farm = farm
-            farm.owner = farmer
-        
+            farm.farmer = farmer
+    
+    
+    # The following methods are not used for initiation of the model 
+    
     def step(self):
         """
         
@@ -244,10 +279,7 @@ class SBPAdoption(mesa.Model):
         self.market.step()
         for government in self.pasture_governments.values():
             government.step()
-        print("step!")
-        #step of the government
-        #schedule step
-    
+        self.schedule.step()
     
 
 

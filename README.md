@@ -11,6 +11,7 @@ Specify to use pipenv
 
 ## How to Run
 
+Option: provide a jupyer notebook with the dictionaries/lists that need to be passed to the program already set, just to change values
 Here also a section on the databases, how do they have to be constructed
 
 ## Files
