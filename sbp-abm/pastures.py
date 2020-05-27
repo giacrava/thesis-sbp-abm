@@ -34,12 +34,11 @@ class NaturalPasture(Pasture):
         super().__init__(model)
         self.pasture_type = 'Natural Pasture'
     
-    def NPV_adoption(self):
+    def NPV_adoption(self): ## ACTUALLY NOT NEEEDED HERE NO?
         pass
     
     def NPV_keeping(self):
-        pass
-
+        return 2
 
 class SownPermanentPasture(Pasture):
     """
@@ -75,13 +74,12 @@ class SownPermanentPasture(Pasture):
         pass
     
     def NPV_adoption(self):
-        
         # Calculate initial investment
         # Calculate yearly revenues (not including only PCF support)
         # Calculate yearly costs
         # Retrieve payments for adoption by PCF
         # Calculate NPV as Revenues + PCF_subs - costs 
-        pass
+        return 10
     
     def NPV_keeping(self):
-        pass
+        pass 

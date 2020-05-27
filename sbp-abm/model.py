@@ -279,7 +279,11 @@ class SBPAdoption(mesa.Model):
         self.market.step()
         for government in self.pasture_governments.values():
             government.step()
+            
+        print("schedule step")
+        
         self.schedule.step()
+        
     
 
 

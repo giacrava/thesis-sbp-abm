@@ -141,7 +141,13 @@ class Farmer(mesa.Agent):
         self.farm = None
         
     def step(self):
-        print("Farmer step")
+        """
+        Step method called every model step by the scheduler.
+
+        Calls the step method of the farmers' farm.
+
+        """
+        self.farm.step()
 
 class Farm(mesa.Agent):
     """
@@ -186,7 +192,42 @@ class Farm(mesa.Agent):
         self.farmer = None
         
     def step(self):
-        pass
+        """
+        Step method by the step method of the farmer that own the farm.
+        
+        Check if any different pasture can be adopted.
+        In case:
+            - Calculate NPV of keeping actual pasture
+            - Calculate NPV of adoption of each adoptable pasture
+            - Calculate differential NPVs
+
+        """
+        ## Check if pasture expired here? Would be called also in case pasture
+        ## is natural, but can just be a pass method (maybe even in the parent
+        ## class)
+        
+        print("farm", self.code,"step")
+        
+        adoptable_pastures = [past for past in self.model.adoptable_pastures
+                              if past != self.pasture_type]
+
+        if adoptable_pastures: ## MAYBE BETTER TO MOVE TO ANOTHER FUNCTION
+                                ## DONE ONLY IF PASTURE NATURAL IN TOY MODEL
+            NPV_keeping_actual = self.pasture_type.NPV_keeping()
+            NPVs_adoption = []
+            NPVs_differential = []
+            for pasture in adoptable_pastures:
+                NPV_adoption = pasture.NPV_adoption()
+                NPVs_adoption.append(NPV_adoption)
+                NPV_differential = NPV_adoption - NPV_keeping_actual
+                NPVs_differential.append(NPV_differential)
+                
+            # Calculate geog influence
+            # Scores from logistic regression
+            # Pick best
+            # Prob. of adoption
+                
+            print(NPVs_adoption, NPVs_differential)
         
  
         
