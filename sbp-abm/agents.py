@@ -6,8 +6,10 @@ Created on Thu May 21 09:45:52 2020
 """
 import mesa
 
+## CH: good norm 1 class for file, even subclasses! Maybe in a folder agents. Then 1 only file to
+## put all the imports and then import the file. Even if in Python seen often. Every file should be long as one video
 
-class Government(mesa.Agent): #IS IT ABSTRACT?
+class Government(mesa.Agent): #@ CH: should be abstract, since not intialized --> multiple inheritance
     """
     Base class for the agents reporting payments for ecosystem services from 
     pastures.
@@ -44,7 +46,7 @@ class Government(mesa.Agent): #IS IT ABSTRACT?
             raise KeyError('Payment for '+ self.pasture_type +' not provided.'
                            'Please include them in the "payments" dictionary.'
                            )
-            
+        ## CH: porcata, pasture type non c'è qui andrebbe dichiarata vuota nel __init__   
     def step(self):
         pass
        
@@ -54,6 +56,9 @@ class SownPermanentPasturesGovernment(Government):
     
     Attributes
     ----------
+    pasture_type : str
+        The pasture type they report the payment for 
+    
     payment : dict
         Report the payment for adoption from 2009 to 2014
         
@@ -174,7 +179,9 @@ class Farm(mesa.Agent):
     step
     
     """  
-    def __init__(self, unique_id, model, farm_data):
+    def __init__(self, unique_id, model, farm_data): 
+        ## CH: fai attenzione a passare tutto da per tutto (come il modello)
+        ## perchè violi  la programmazione ad oggetti principles
         """
         Parameters
         ----------
@@ -204,7 +211,11 @@ class Farm(mesa.Agent):
         """
         ## Check if pasture expired here? Would be called also in case pasture
         ## is natural, but can just be a pass method (maybe even in the parent
-        ## class)
+        ## class) --> ha senso tenere passato il model quando l'unica cosa che 
+        ## che serve sono le adoptable pastures? Potrebbe essere un problema
+        ## se vogliamo cambiare le le adoptable pastures nel main. Se passi 
+        ## solo l'oggetto lo vedi nel model cosa passi e quindi cosa viene 
+        ## influenzato
         
         print("farm", self.code,"step")
         

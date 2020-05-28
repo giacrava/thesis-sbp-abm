@@ -58,8 +58,13 @@ class SBPAdoption(mesa.Model):
 
         super().__init__()
         
-        self.farmers_data = farmers_data
+        self.farmers_data = farmers_data ## CH: io mi aspetto una stringa,
+         ## invece mi arrivano i dati caricati tramite il setter --> porcatissima
         self.farms_data = farms_data
+        ## CH come risolvere
+        #self.farmers_data = []
+        #self.__load_farmers_data(farmers_data)
+        # e sotto sostituire @portoperty e @ setter e sostituire il setter con quuesto nome --> setter servono all'esterno in generale non all'interno
         
         self.pasture_governments = self.__create_governments(payments)
         self.market = agents.Market(self.next_id(), self)
@@ -69,6 +74,9 @@ class SBPAdoption(mesa.Model):
         self.adoptable_pastures = [] 
         self.pastures_mapping = {}
         self.__create_pastures()
+        
+        ## CH: all these should be private with a getter and setter! 
+        ## adoptable pastures are acessible --> getter pubblico e setter non c'è (vedi screenshot in OOP)
         
         ## MUNICIPALITIES
         ## Create municipalities and also list of municipalities string (to give
@@ -122,7 +130,8 @@ class SBPAdoption(mesa.Model):
     def farms_data(self):
         return self._farms_data
     
-    @farms_data.setter
+    @farms_data.setter ## CH: normalmente fa poca roba, tipo non legge un excel,
+    ## fai una funzione normale da richiamare fuori 
     def farms_data(self, farms_data):
         """
         Convert the farms excel database into a pandas dataframe, check that
@@ -257,14 +266,23 @@ class SBPAdoption(mesa.Model):
         Links farms and farmers.
 
         """
+         ##CH: il modello conosce troppe cose. Le classi dovrebbero fare tutto
+         ## questo sotto da per sè. Si chiamano farmer data, quindi loro dovrebbero
+         ## fare queste cose. Per pasture invece ci sta che il modello
+         ## li crei perchè sono solo due oggetti considivisi. Ci sta il fatto che 
+         ## comunque la creazione è qui e tutta la logica è dentro. 
+         ## Si può passare la creaione delle farm dentro la creazione dei contadini
+         
         for id_ in farmers_data.index:
             farmer = agents.Farmer(self.next_id(), self, farmers_data.loc[id_])
             self.schedule.add(farmer)
             farm = agents.Farm(self.next_id(), self, farms_data.loc[id_])
+            ## CH: very brutte righe. La farm potrebbe non aver bisogno del farmer
+            ## associato.  Poi una dovrebbe essere nascosta da un metodo
             farmer.farm = farm
             farm.farmer = farmer
     
-    
+  
     # The following methods are not used for initiation of the model 
     
     def step(self):
