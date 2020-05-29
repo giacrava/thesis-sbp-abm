@@ -7,7 +7,6 @@ Created on Sat May 23 16:30:47 2020
 
 import model
 
-
 farmers_data = "data/FarmersData.xlsx"
 farms_data = "data/FarmsData.xlsx"
 

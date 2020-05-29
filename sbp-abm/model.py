@@ -11,8 +11,6 @@ import mesa
 import mesa.time
 
 import agents
-import pastures
-
 
 class SBPAdoption(mesa.Model):
     """
@@ -29,14 +27,11 @@ class SBPAdoption(mesa.Model):
     pasture_governments : dict
         Maps pastures to the relative agent responsible for reporting the 
         payments for ecosystem services (if any)   
-    possible_pastures : list
-        Pasture objects that each farm can have    
+    # possible_pastures : list
+    #     Pasture objects that each farm can have    
     adoptable_pasture : list
         Pasture objects that each farmer considers for adoption (if not already 
         adopted in the farm)       
-    pastures_mapping : dict
-        Maps each string in the "Pasture" column of the farms excel 
-        database to the relative Pasture object.
     
     """   
     def __init__(self, farmers_data, farms_data, payments):
@@ -58,58 +53,60 @@ class SBPAdoption(mesa.Model):
 
         super().__init__()
         
-        self.farmers_data = farmers_data ## CH: io mi aspetto una stringa,
-         ## invece mi arrivano i dati caricati tramite il setter --> porcatissima
-        self.farms_data = farms_data
-        ## CH come risolvere
-        #self.farmers_data = []
-        #self.__load_farmers_data(farmers_data)
-        # e sotto sostituire @portoperty e @ setter e sostituire il setter con quuesto nome --> setter servono all'esterno in generale non all'interno
+        self._farmers_data = []
+        self._load_farmers_data(farmers_data)
+        self._farms_data = []
+        self._load_farms_data(farms_data)
         
-        self.pasture_governments = self.__create_governments(payments)
+        self.pasture_governments = self._initialize_governments(payments)
         self.market = agents.Market(self.next_id(), self)
         
         # Pastures instantiation
-        self.possible_pastures = []
-        self.adoptable_pastures = [] 
-        self.pastures_mapping = {}
-        self.__create_pastures()
-        
-        ## CH: all these should be private with a getter and setter! 
-        ## adoptable pastures are acessible --> getter pubblico e setter non c'è (vedi screenshot in OOP)
+        self._possible_pastures = []
+        self._adoptable_pastures = [] 
+        self._pastures_mapping = {}
+        self._initialize_pastures()
         
         ## MUNICIPALITIES
         ## Create municipalities and also list of municipalities string (to give
         ## to the replace_string_with_objects function after merging in a dict)
         
         self.schedule = mesa.time.RandomActivation(self)
-    
+        
         # Farmers and farms instantiation
-        self.__replace_strings_with_objects(self.farms_data,                                                             
+        self._replace_strings_with_objects(self._farms_data,                                                             
                                            'Pasture',
-                                           self.pastures_mapping)
-        
+                                           self._pastures_mapping)
         ## Same for municipalities
-        self.__create_farmers_and_farms(self.farmers_data, self.farms_data)
-        
-        
+        self._initialize_farmers_and_farms(self._farmers_data, self._farms_data)
+     
     @property
     def farmers_data(self):
         return self._farmers_data
     
-    @farmers_data.setter
-    def farmers_data(self, farmers_data):
+    @property
+    def farms_data(self):
+        return self._farms_data
+    
+    @property
+    def adoptable_pastures(self):
+        return self._adoptable_pastures
+        
+    def _load_farmers_data(self, farmers_data):
         """
+        Load the farmers excel database into a pandas dataframe and set the 
+        attribute self._farmers_data
+        
         Check that the farmers_data excel file doesn't have multiple rows
         referring to the same farmer (i.e. with the same ID).
         In case it has, raises a ValueError exception.
-        Also, drops any blank line fro the excel file in case present.
+        Also, drops any blank line from the excel file in case present.
 
         """
         farmers_dataframe = pd.read_excel(farmers_data, index_col = 0)
         
-        ## TO REINTRODUCE WHEN FARMERS WILL HAVE AN ATTRIBUTE, OTERWISE CONSIDERS ALL
-        ## LINES AS EMPTY AND DROPS EVERYTHING
+        ## TO REINTRODUCE WHEN FARMERS WILL HAVE AN ATTRIBUTE, OTERWISE CONSIDERS
+        ## ALL LINES AS EMPTY AND DROPS EVERYTHING
         # farmers_dataframe = farmers_dataframe.dropna(how='all') 
         # if farmers_dataframe.isnull().values.any():
             # raise ValueError('The farmers excel database has some missing values'
@@ -126,13 +123,8 @@ class SBPAdoption(mesa.Model):
         else:    
             self._farmers_data = farmers_dataframe
 
-    @property
-    def farms_data(self):
-        return self._farms_data
-    
-    @farms_data.setter ## CH: normalmente fa poca roba, tipo non legge un excel,
-    ## fai una funzione normale da richiamare fuori 
-    def farms_data(self, farms_data):
+
+    def _load_farms_data(self, farms_data):
         """
         Convert the farms excel database into a pandas dataframe, check that
         it respect the requirements and substitutes the pasture and
@@ -162,19 +154,19 @@ class SBPAdoption(mesa.Model):
                              'following ID values: ' + 
                              ', '.join(duplicated_farms_id.values))
         
-        farmers_id = self.farmers_data.index
+        farmers_id = self._farmers_data.index
         ID_in_farmers_and_not_in_farms = [ID for ID in farmers_id.values 
                                           if ID not in farms_id.values]
         ID_in_farms_and_not_in_farmers = [ID for ID in farms_id.values
                                           if ID not in farmers_id.values]
         if ID_in_farmers_and_not_in_farms and ID_in_farms_and_not_in_farmers:
             raise ValueError('Rows with the following ID values are in the'
-                                 ' farmers dataset but not in the farms one: ' 
-                                 + ', '.join(ID_in_farmers_and_not_in_farms) 
-                                 + '\n' + 'Rows with the following ID values ' 
-                                 'are in the farms dataset but not in the '
-                                 'farmers one: ' 
-                                 + ', '.join(ID_in_farms_and_not_in_farmers))
+                             ' farmers dataset but not in the farms one: ' 
+                             + ', '.join(ID_in_farmers_and_not_in_farms) 
+                             + '\n' + 'Rows with the following ID values ' 
+                             'are in the farms dataset but not in the '
+                             'farmers one: ' 
+                                + ', '.join(ID_in_farms_and_not_in_farmers))
         elif ID_in_farmers_and_not_in_farms:
             raise ValueError('Rows with the following ID values are in the'
                              ' farmers dataset but not in the farms one: ' 
@@ -185,9 +177,9 @@ class SBPAdoption(mesa.Model):
                              + ', '.join(ID_in_farms_and_not_in_farmers))
         else:
             self._farms_data = farms_dataframe
-                
+           
     @staticmethod
-    def __replace_strings_with_objects(dataframe, column, mapping):
+    def _replace_strings_with_objects(dataframe, column, mapping):
         """
         Called by the __init__ method.
         
@@ -226,7 +218,7 @@ class SBPAdoption(mesa.Model):
                              ' contains the following wrong entries: ' + 
                              ", ".join(wrong_strings))
         
-    def __create_governments(self, payments):
+    def _initialize_governments(self, payments):
         """
         Called by the __init__ method.
         
@@ -240,50 +232,45 @@ class SBPAdoption(mesa.Model):
             pasture_governments[obj.pasture_type] = obj
         return pasture_governments
     
-    def __create_pastures(self):
+    def _initialize_pastures(self):
         """
         Called by the __init__ method.
         
         Creates the attributes possible_pastures and adoptable_pastures.
 
         """              
-        for pasture_class in pastures.Pasture.__subclasses__():
+        for pasture_class in agents.Pasture.__subclasses__():
             pasture_object = pasture_class(self)
-            self.possible_pastures.append(pasture_object)
-            self.pastures_mapping[pasture_object.pasture_type] = pasture_object
+            self._possible_pastures.append(pasture_object)
+            self._pastures_mapping[pasture_object.pasture_type] = pasture_object
         
-        self.adoptable_pastures = [
-            pasture for pasture in self.possible_pastures 
-            if not isinstance(pasture, pastures.NaturalPasture)
+        self._adoptable_pastures = [
+            pasture for pasture in self._possible_pastures 
+            if not isinstance(pasture, agents.NaturalPasture)
             ]
         
-    def __create_farmers_and_farms(self, farmers_data, farms_data):
+    def _initialize_farmers_and_farms(self, farmers_data, farms_data):
         """
         Called by the __init__ method.   
         
-        Creates farmers and add them to the scheduler.
-        Creates farms.
-        Links farms and farmers.
+        Initialize farmer objects from the database and add them to the 
+        scheduler. 
+        (Note that each farmer initializes its farm).
 
         """
          ##CH: il modello conosce troppe cose. Le classi dovrebbero fare tutto
          ## questo sotto da per sè. Si chiamano farmer data, quindi loro dovrebbero
          ## fare queste cose. Per pasture invece ci sta che il modello
          ## li crei perchè sono solo due oggetti considivisi. Ci sta il fatto che 
-         ## comunque la creazione è qui e tutta la logica è dentro. 
-         ## Si può passare la creaione delle farm dentro la creazione dei contadini
+         ## comunque la creazione è qui e tutta la logica è invece dentro ogni classe. 
+         ## TO DO Si può passare la creaione delle farm dentro la creazione dei contadini
          
         for id_ in farmers_data.index:
             farmer = agents.Farmer(self.next_id(), self, farmers_data.loc[id_])
             self.schedule.add(farmer)
-            farm = agents.Farm(self.next_id(), self, farms_data.loc[id_])
-            ## CH: very brutte righe. La farm potrebbe non aver bisogno del farmer
-            ## associato.  Poi una dovrebbe essere nascosta da un metodo
-            farmer.farm = farm
-            farm.farmer = farmer
-    
-  
-    # The following methods are not used for initiation of the model 
+
+
+    # The following methods are not used during the initiation of the model 
     
     def step(self):
         """
@@ -294,6 +281,8 @@ class SBPAdoption(mesa.Model):
         None.
 
         """
+        ## IF GOVERNMENT AND MARKET ARE NO ACTUALLY DINAMICALLY CHANGING THE PAYMENTS,
+        ## NO NEED FOR A STEP METHOD
         self.market.step()
         for government in self.pasture_governments.values():
             government.step()
