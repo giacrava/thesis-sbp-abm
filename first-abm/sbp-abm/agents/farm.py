@@ -5,9 +5,6 @@ Created on Thu May 28 14:52:56 2020
 @author: giaco
 """
 
-import mesa
-
-
 class Farm:
     """
     Class for farm objects.
@@ -66,7 +63,7 @@ class Farm:
         ## is natural, but can just be a pass method (maybe even in the parent
         ## class)
         
-        print("farm", self.code,"step")
+        print("farm", self.code, "step")
         
         farm_adoptable_pastures = [pasture for pasture
                                    in self.model_adoptable_pastures
@@ -74,20 +71,20 @@ class Farm:
 
         if farm_adoptable_pastures: ## MAYBE BETTER TO MOVE TO ANOTHER FUNCTION
                                     ## DONE ONLY IF PASTURE NATURAL IN TOY MODEL
-            NPV_keeping_actual = self.pasture_type.NPV_keeping()
-            NPVs_adoption = []
-            NPVs_differential = []
+            npv_keeping_actual = self.pasture_type.npv_keeping()
+            npvs_adoption = []
+            npvs_differential = []
             for pasture in farm_adoptable_pastures:
-                NPV_adoption = pasture.NPV_adoption()
-                NPVs_adoption.append(NPV_adoption)
-                NPV_differential = NPV_adoption - NPV_keeping_actual
-                NPVs_differential.append(NPV_differential)
+                npv_adoption = pasture.npv_adoption()
+                npvs_adoption.append(npv_adoption)
+                npv_differential = npv_adoption - npv_keeping_actual
+                npvs_differential.append(npv_differential)
                 
             # Calculate geog influence
             # Scores from logistic regression
             # Pick best
             # Prob. of adoption
                 
-            print(NPVs_adoption, NPVs_differential)
+            print(npvs_adoption, npvs_differential)
         
  

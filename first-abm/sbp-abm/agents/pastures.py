@@ -16,11 +16,11 @@ class Pasture(abc.ABC):
         self.model = model
     
     @abc.abstractmethod
-    def NPV_adoption(self):
+    def npv_adoption(self):
         pass
     
     @abc.abstractmethod
-    def NPV_keeping(self): #maybe a better name?
+    def npv_keeping(self): #maybe a better name?
         pass
     
 
@@ -34,10 +34,10 @@ class NaturalPasture(Pasture):
         super().__init__(model)
         self.pasture_type = 'Natural Pasture'
     
-    def NPV_adoption(self): ## ACTUALLY NOT NEEEDED HERE NO?
+    def npv_adoption(self): ## ACTUALLY NOT NEEEDED HERE NO?
         pass
     
-    def NPV_keeping(self):
+    def npv_keeping(self):
         return 2
 
 class SownPermanentPasture(Pasture):
@@ -73,7 +73,7 @@ class SownPermanentPasture(Pasture):
         # If age = 10, switch to natural
         pass
     
-    def NPV_adoption(self):
+    def npv_adoption(self):
         # Calculate initial investment
         # Calculate yearly revenues (not including only PCF support)
         # Calculate yearly costs
@@ -81,5 +81,5 @@ class SownPermanentPasture(Pasture):
         # Calculate NPV as Revenues + PCF_subs - costs 
         return 10
     
-    def NPV_keeping(self):
+    def npv_keeping(self):
         pass 

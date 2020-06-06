@@ -12,7 +12,7 @@ from agents.farm import Farm
 class Farmer(mesa.Agent):
     """
     Class for farmer agents.
-    
+
     Farmers:
         - own a farm
         - have a step method that is directly called by the model's schedule at 
@@ -48,9 +48,9 @@ class Farmer(mesa.Agent):
         super().__init__(unique_id, model)
         self.code = farmer_data.name
         self.farm = Farm(self.model.next_id(), 
-                              self.model.adoptable_pastures, 
-                              self.model.farms_data.loc[self.code])
-        
+                         self.model.adoptable_pastures, 
+                         self.model.farms_data.loc[self.code])
+
     def step(self):
         """
         Step method called every model step by the scheduler.

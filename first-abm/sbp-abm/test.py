@@ -20,9 +20,8 @@ sbp_payment = {
     '2014': 75,
     }
 
-payments = {'Sown Permanent Pasture' : sbp_payment}
+payments = {'Sown Permanent Pasture': sbp_payment}
 
 
 model = model.SBPAdoption(farmers_data, farms_data, payments)
 model.step()
-

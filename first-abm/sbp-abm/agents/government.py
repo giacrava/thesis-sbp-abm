@@ -4,9 +4,9 @@ Created on Thu May 28 14:53:03 2020
 
 @author: giaco
 """
+import abc
 
 import mesa
-import abc
 
 
 class Government(mesa.Agent, abc.ABC):
@@ -18,7 +18,7 @@ class Government(mesa.Agent, abc.ABC):
     """   
     @abc.abstractmethod
     def __init__(self, unique_id, model):
-        # super().__init__(unique_id, model)
+        super().__init__(unique_id, model)
         self.pasture_type = ''
 
     @abc.abstractmethod
