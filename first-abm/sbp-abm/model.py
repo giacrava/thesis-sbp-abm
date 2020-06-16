@@ -126,9 +126,8 @@ class SBPAdoption(mesa.Model):
 
     def _load_farms_data(self, farms_data):
         """
-        Convert the farms excel database into a pandas dataframe, check that
-        it respect the requirements and substitutes the pasture and
-        municipalities columns strings with the respective objects.
+        Convert the farms excel database into a pandas datafram and check that
+        it respect the requirements and substitutes the pasture.
 
         Checks:
             Ignores, if present, blank lines from the excel file

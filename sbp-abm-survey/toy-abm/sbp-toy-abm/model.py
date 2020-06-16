@@ -28,8 +28,6 @@ class SBPAdoption(mesa.Model):
     pasture_governments : dict
         Maps pastures to the relative agent responsible for reporting the
         payments for ecosystem services (if any)
-    # possible_pastures : list
-    #     Pasture objects that each farm can have
     adoptable_pasture : list
         Pasture objects that each farmer considers for adoption (if not already
         adopted in the farm)
@@ -57,6 +55,7 @@ class SBPAdoption(mesa.Model):
 
         self._farmers_data = []
         self._load_farmers_data(farmers_data)
+
         self._farms_data = []
         self._load_farms_data(farms_data)
 
@@ -69,17 +68,13 @@ class SBPAdoption(mesa.Model):
         self._pastures_mapping = {}
         self._initialize_pastures()
 
-        ## MUNICIPALITIES
-        ## Create municipalities and also list of municipalities string (to give
-        ## to the replace_string_with_objects function after merging in a dict)
-
         self.schedule = mesa.time.RandomActivation(self)
 
         # Farmers and farms instantiation
         self._replace_strings_with_objects(self._farms_data,
                                            'Pasture',
                                            self._pastures_mapping)
-        ## Same for municipalities
+
         self._initialize_farmers_and_farms(self._farmers_data)
 
     @property
@@ -107,13 +102,11 @@ class SBPAdoption(mesa.Model):
         """
         farmers_dataframe = pd.read_excel(farmers_data, index_col=0)
 
-        ## TO REINTRODUCE WHEN FARMERS WILL HAVE AN ATTRIBUTE, OTERWISE CONSIDERS
-        ## ALL LINES AS EMPTY AND DROPS EVERYTHING
-        # farmers_dataframe = farmers_dataframe.dropna(how='all') 
-        # if farmers_dataframe.isnull().values.any():
-            # raise ValueError('The farmers excel database has some missing values'
-            #                  '. Please fill in the right values or remove the '
-            #                  'farmer and the relative farm from the database.')
+        farmers_dataframe = farmers_dataframe.dropna(how='all')
+        if farmers_dataframe.isnull().values.any():
+            raise ValueError('The farmers excel database has some missing values'
+                              '. Please fill in the right values or remove the '
+                              'farmer and the relative farm from the database.')
 
         farmers_id = farmers_dataframe.index
 
@@ -126,9 +119,8 @@ class SBPAdoption(mesa.Model):
 
     def _load_farms_data(self, farms_data):
         """
-        Convert the farms excel database into a pandas dataframe, check that
-        it respect the requirements and substitutes the pasture and
-        municipalities columns strings with the respective objects.
+        Convert the farms excel database into a pandas dataframe and check that
+        it respect the requirements.
 
         Checks:
             Ignores, if present, blank lines from the excel file
@@ -234,19 +226,30 @@ class SBPAdoption(mesa.Model):
         """
         Called by the __init__ method.
 
-        Creates the attributes possible_pastures, adoptable_pastures and 
-        pastures_mapping (used to replace in the excel data the pastures
-        with the corresponging pasture object).
+        Creates the attributes:
+            - possible_pastures, containing all the pastures that a farm can
+            have
+            - adoptable_pastures, containing all the pastures that a farmers
+            can consider for adoption
+            - pastures_mapping, used to replace in the excel data the pastures
+            with the corresponging pasture object.
 
         """
-        for pasture_class in agents.Pasture.__subclasses__():
+        pastures_not_adoptable = [
+            pasture for pasture in agents.Pasture.__subclasses__()
+            if pasture != agents.pastures.AdoptablePasture
+            ]
+        pastures_adoptable = agents.AdoptablePasture.__subclasses__()
+        possible_pastures = pastures_not_adoptable + pastures_adoptable
+
+        for pasture_class in possible_pastures:
             pasture_object = pasture_class(self)
             self._possible_pastures.append(pasture_object)
             self._pastures_mapping[pasture_object.pasture_type] = pasture_object
 
         self._adoptable_pastures = [
             pasture for pasture in self._possible_pastures
-            if not isinstance(pasture, agents.NaturalPasture)
+            if isinstance(pasture, agents.AdoptablePasture)
             ]
 
     def _initialize_farmers_and_farms(self, farmers_data):
@@ -255,38 +258,25 @@ class SBPAdoption(mesa.Model):
 
         Initialize farmer objects from the database and add them to the
         scheduler.
-        (Note that each farmer initializes its farm).
+        During its initialization, ach farmer initializes its farm.
 
         """
-         ##CH: il modello conosce troppe cose. Le classi dovrebbero fare tutto
-         ## questo sotto da per sè. Si chiamano farmer data, quindi loro dovrebbero
-         ## fare queste cose. Per pasture invece ci sta che il modello
-         ## li crei perchè sono solo due oggetti considivisi. Ci sta il fatto che 
-         ## comunque la creazione è qui e tutta la logica è invece dentro ogni classe. 
-         ## TO DO Si può passare la creaione delle farm dentro la creazione dei contadini
 
         for id_ in farmers_data.index:
             farmer = agents.Farmer(self.next_id(), self, farmers_data.loc[id_])
             self.schedule.add(farmer)
 
-
     # The following methods are not used during the initiation of the model
 
     def step(self):
         """
+        Step method of the model.
 
+        Calls the step methods of the agents added to the schedule.
 
         Returns
         -------
         None.
 
         """
-        ## IF GOVERNMENT AND MARKET ARE NO ACTUALLY DINAMICALLY CHANGING THE PAYMENTS,
-        ## NO NEED FOR A STEP METHOD
-        self.market.step()
-        for government in self.pasture_governments.values():
-            government.step()
-
-        print("schedule step")
-
         self.schedule.step()
