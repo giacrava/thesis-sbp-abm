@@ -9,8 +9,28 @@ import pandas as pd
 
 import mesa
 import mesa.time
+import mesa.datacollection
 
 import agents
+
+
+def get_percentage_adopted(model):
+    """
+    Method to calculate how many farmers have adopted SBP.
+    Called by the Data Collector.
+
+    Returns
+    -------
+    percentage_adopted : int
+        Percentage of farmers that have adopted SBP.
+
+    """
+    farmers_adopted = 0
+    for farmer in model.schedule.agents:
+        if farmer.farm.pasture_type.type == 'Sown Permanent Pasture':
+            farmers_adopted += 1
+    percentage_adopted = farmers_adopted / model._total_farmers * 100
+    return percentage_adopted
 
 
 class SBPAdoption(mesa.Model):
@@ -31,10 +51,12 @@ class SBPAdoption(mesa.Model):
     adoptable_pasture : list
         Pasture objects that each farmer considers for adoption (if not already
         adopted in the farm)
+    total_farmers : int
+        Number of farmers present in the model
 
     """
 
-    def __init__(self, farmers_data, farms_data, payments):
+    def __init__(self, farmers_data, farms_data, payments, seed=None):
         """
         Initalization of the model.
 
@@ -74,8 +96,16 @@ class SBPAdoption(mesa.Model):
         self._replace_strings_with_objects(self._farms_data,
                                            'Pasture',
                                            self._pastures_mapping)
-
+        self._total_farmers = 0
         self._initialize_farmers_and_farms(self._farmers_data)
+
+        self.datacollector = mesa.datacollection.DataCollector(
+            agent_reporters={
+                'FARM_ID': lambda a: a.code,
+                'Pasture': lambda a: a.farm.pasture_type.type},
+            model_reporters={
+                'Percentage of adoption': get_percentage_adopted}
+                )
 
     @property
     def farmers_data(self):
@@ -245,7 +275,7 @@ class SBPAdoption(mesa.Model):
         for pasture_class in possible_pastures:
             pasture_object = pasture_class(self)
             self._possible_pastures.append(pasture_object)
-            self._pastures_mapping[pasture_object.pasture_type] = pasture_object
+            self._pastures_mapping[pasture_object.type] = pasture_object
 
         self._adoptable_pastures = [
             pasture for pasture in self._possible_pastures
@@ -261,10 +291,10 @@ class SBPAdoption(mesa.Model):
         During its initialization, ach farmer initializes its farm.
 
         """
-
         for id_ in farmers_data.index:
             farmer = agents.Farmer(self.next_id(), self, farmers_data.loc[id_])
             self.schedule.add(farmer)
+            self._total_farmers += 1
 
     # The following methods are not used during the initiation of the model
 
@@ -274,9 +304,23 @@ class SBPAdoption(mesa.Model):
 
         Calls the step methods of the agents added to the schedule.
 
-        Returns
-        -------
-        None.
-
         """
         self.schedule.step()
+        self.datacollector.collect(self)
+
+
+
+# farmers_data = "../data/FarmersData.xlsx"
+# farms_data = "../data/FarmsData.xlsx"
+
+# # Give payments in €/hectare, one entry for each year 
+# ## WILL HAVE TO CONSIDER FOR HOW MANY YEARS
+# sbp_payment = [50, 50, 50]
+
+# payments = {'Sown Permanent Pasture': sbp_payment}
+
+
+# model = SBPAdoption(farmers_data, farms_data, payments, seed=0)
+# model.step()
+# adoption_out = model.datacollector.get_agent_vars_dataframe()
+# aggr_adoption_out = model.datacollector.get_model_vars_dataframe()

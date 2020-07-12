@@ -28,10 +28,10 @@ class Pasture:
         """
         self.model = model
         self.market = model.market
-        self.pasture_type = ''
+        self.type = ''
 
     def npv_keeping(self):
-        raise ValueError('"' + self.pasture_type + '"' + ' Pasture subclass '
+        raise ValueError('"' + self.type + '"' + ' Pasture subclass '
                          'lacks the implementation of the method to calculate '
                          'the NPV of keeping it.')
 
@@ -42,7 +42,7 @@ class NaturalPasture(Pasture):
 
     Attributes
     ----------
-    pasture_type : str
+    type : str
         String characterizing the pasture, to associate from database
 
     Methods
@@ -61,10 +61,10 @@ class NaturalPasture(Pasture):
 
         """
         super().__init__(model)
-        self.pasture_type = 'Natural Pasture'
+        self.type = 'Natural Pasture'
 
     def npv_keeping(self):
-        return random.randint(1, 5)
+        return self.model.random.randint(1, 5)
 
 
 class AdoptablePasture(Pasture, abc.ABC):
@@ -101,8 +101,8 @@ class SownPermanentPasture(AdoptablePasture):
 
         """
         super().__init__(model)
-        self.pasture_type = 'Sown Permanent Pasture'
-        self.government = self.model.pasture_governments[self.pasture_type]
+        self.type = 'Sown Permanent Pasture'
+        self.government = self.model.pasture_governments[self.type]
 
     def npv_adoption(self, pasture_area, farmer_education):
         # Calculate initial investment
@@ -110,4 +110,4 @@ class SownPermanentPasture(AdoptablePasture):
         # Calculate yearly costs
         # Retrieve payments for adoption by PCF
         # Calculate NPV as Revenues + PCF_subs - costs
-        return random.randint(2, 6)
+        return self.model.random.randint(2, 6)

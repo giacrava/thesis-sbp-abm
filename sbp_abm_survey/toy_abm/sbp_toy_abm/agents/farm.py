@@ -58,7 +58,9 @@ class Farm:
         In case:
             - Calculate NPV of keeping actual pasture
             - Calculate NPV of adoption of each adoptable pasture
-            - Calculate differential NPVs
+            - Calculate differential NPV
+            - If there are positive ones, choose the more advantageous relative
+            pasture and adopt it
 
         """
 

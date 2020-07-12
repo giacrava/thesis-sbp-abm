@@ -11,6 +11,7 @@ spyder-kernels = "*"
 xlrd = "*"
 ipykernel = "*"
 matplotlib = "*"
+sklearn = "*"
 
 [requires]
 python_version = "3.6"
