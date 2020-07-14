@@ -6,6 +6,7 @@ Created on Thu May 21 09:45:34 2020
 """
 
 import pandas as pd
+import geopandas as gpd
 
 import mesa
 import mesa.time
@@ -15,10 +16,11 @@ import mesa_geo
 import agents
 
 
+# Functions for datacollector
 def get_percentage_adopted(model):
     """
     Method to calculate how many farmers have adopted SBP.
-    Called by the Data Collector.
+    Called by the DataCollector.
 
     Returns
     -------
@@ -88,27 +90,16 @@ class SBPAdoption(mesa.Model):
         self.pasture_governments = self._initialize_governments(payments)
         self.market = agents.Market(self.next_id(), self)
 
+        # Municipalities instantiation
+        self.municipalities = []
+        self._initialize_municipalities()
+
         # Pastures instantiation
         self._possible_pastures = []
         self._adoptable_pastures = []
         self._pastures_mapping = {}
         self._initialize_pastures()
 
-
-        ## MUNICIPALITIES --> MOVE TO A FUNCTION, TEST WITH ONLY 1
-        ## Create municipalities and also list of municipalities string (to give
-        ## to the replace_string_with_objects function after merging in a dict)  
-        counties_shp = "..\data\counties_shp\concelhos.shp"
-        AC = mesa_geo.AgentCreator(agent_class=agents.Municipality,
-                                   agent_kwargs={"model": self})
-        self.municipalities = AC.from_file(filename=counties_shp)
-        ## SELECT ONLY RELEVANT MUNICIPALITIES: just check the macro areas
-        ## where the farms that we have are and select those manually--> when
-        ## with more farmers, will have in any case to selct some areas and only
-        ## some farmers
-        
-        # self.grid.add_agents(self.municipalities)
-        
         # Farmers and farms instantiation
         self._replace_strings_with_objects(self._farms_data,
                                            'Pasture',
@@ -269,6 +260,43 @@ class SBPAdoption(mesa.Model):
             obj = government_subclass(self.next_id(), self, payments)
             pasture_governments[obj.pasture_type] = obj
         return pasture_governments
+
+    def _initialize_municipalities(self):
+        """
+        
+
+        Returns
+        -------
+        None.
+
+        """
+        ## MUNICIPALITIES --> TEST WITH ONLY 1
+        ## Create municipalities and also list of municipalities string (to give
+        ## to the replace_string_with_objects function after merging in a dict)
+        
+        municipalities_shp = "..\data\counties_shp\concelhos.shp"
+        municipalities_data = gpd.read_file(municipalities_shp)
+
+        useful_cols = ['CCA_2', 'NAME_2', 'NAME_1', 'geometry']
+        municipalities_col_sel = municipalities_data[useful_cols]
+        columns_renaming = {'NAME_1': 'District',
+                            'NAME_2': 'Name'}
+        municipalities_col_sel.rename(columns=columns_renaming, inplace=True)
+
+        districts_to_consider = ['Portalegre', 'Setúbal', 'Santarém', 'Évora',
+                                 'Beja']
+        municipalities_selected = municipalities_col_sel[
+            municipalities_col_sel['District'].isin(districts_to_consider)
+            ]
+
+        AC = mesa_geo.AgentCreator(agent_class=agents.Municipality,
+                                   agent_kwargs={"model": self})
+        self.municipalities = AC.from_GeoDataFrame(gdf=municipalities_selected,
+                                                   unique_id='CCA_2')
+
+        self.grid.add_agents(self.municipalities)
+        for munic in self.municipalities:
+            munic.get_neighbors()
 
     def _initialize_pastures(self):
         """
