@@ -10,8 +10,8 @@ import model
 farmers_data = "../data/FarmersData.xlsx"
 farms_data = "../data/FarmsData.xlsx"
 
-# Give payments in €/hectare, one entry for each year 
-## WILL HAVE TO CONSIDER FOR HOW MANY YEARS
+# Give payments in €/hectare, one entry for each year
+# WILL HAVE TO CONSIDER FOR HOW MANY YEAR
 sbp_payment = [50, 50, 50]
 
 payments = {'Sown Permanent Pasture': sbp_payment}
@@ -23,8 +23,8 @@ modelSBP.step()
 
 # for farmer in model.schedule.agents:
 #     print('Farm', farmer.code + ':' + farmer.farm.pasture_type.type)
-    
-#     # maybe better to add farms to a list when initialized, to retrieve 
+
+#     # maybe better to add farms to a list when initialized, to retrieve
 #     # more easily their type at any moment
 
 adoption_out = modelSBP.datacollector.get_agent_vars_dataframe()

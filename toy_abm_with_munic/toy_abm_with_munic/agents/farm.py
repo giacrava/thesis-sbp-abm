@@ -51,6 +51,7 @@ class Farm:
         # Data from database
         self.pasture_area = farm_data['PastureSurface']
         self.pasture_type = farm_data['Pasture']
+        self.municipality = farm_data['Municipality']
 
     def pastures_adoption_evaluation(self):
         """

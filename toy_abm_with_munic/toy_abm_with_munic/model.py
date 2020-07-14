@@ -92,6 +92,7 @@ class SBPAdoption(mesa.Model):
 
         # Municipalities instantiation
         self.municipalities = []
+        self._municipalities_mapping = {}
         self._initialize_municipalities()
 
         # Pastures instantiation
@@ -101,6 +102,10 @@ class SBPAdoption(mesa.Model):
         self._initialize_pastures()
 
         # Farmers and farms instantiation
+        self._replace_strings_with_objects(self._farms_data,
+                                           'Municipality',
+                                           self._municipalities_mapping)
+        
         self._replace_strings_with_objects(self._farms_data,
                                            'Pasture',
                                            self._pastures_mapping)
@@ -215,16 +220,17 @@ class SBPAdoption(mesa.Model):
 
         Replace in the specified column of the dataframe each string with the
         relative object, as specified in the mapping dictionary.
-        Check that the there are no more strings in the column specified.
+        Check that the there are no more strings in the column specified, i.e.
+        that all the strings corresponded to an object.
 
         Parameters
         ----------
         dataframe : pandas dataframe
-            Dataframe to which the column belongs.
+            Dataframe to which the column belongs
         column : str
-            Name of the column we want to replace the strings.
+            Name of the column we want to replace the strings
         mapping : dict
-            Map each string value to the relative object.
+            Map each string value to the relative object
 
         Raises
         ------
@@ -263,24 +269,23 @@ class SBPAdoption(mesa.Model):
 
     def _initialize_municipalities(self):
         """
-        
+        Called by the __init__ method.
 
-        Returns
-        -------
-        None.
+        Load the shapefile of the municipalities, select the data relative to
+        the districts of interest, instantiate the municipalities, create the
+        grid with them and make each retrieve the neighbors municipalities.
+        Also, creates the municipalities mapping dictionary, necessary to 
+        replace in the farms dataset the strings with the relative objects.
 
         """
-        ## MUNICIPALITIES --> TEST WITH ONLY 1
-        ## Create municipalities and also list of municipalities string (to give
-        ## to the replace_string_with_objects function after merging in a dict)
-        
+
         municipalities_shp = "..\data\counties_shp\concelhos.shp"
         municipalities_data = gpd.read_file(municipalities_shp)
 
         useful_cols = ['CCA_2', 'NAME_2', 'NAME_1', 'geometry']
         municipalities_col_sel = municipalities_data[useful_cols]
         columns_renaming = {'NAME_1': 'District',
-                            'NAME_2': 'Name'}
+                            'NAME_2': 'Municipality'}
         municipalities_col_sel.rename(columns=columns_renaming, inplace=True)
 
         districts_to_consider = ['Portalegre', 'Setúbal', 'Santarém', 'Évora',
@@ -293,10 +298,13 @@ class SBPAdoption(mesa.Model):
                                    agent_kwargs={"model": self})
         self.municipalities = AC.from_GeoDataFrame(gdf=municipalities_selected,
                                                    unique_id='CCA_2')
-
+        
         self.grid.add_agents(self.municipalities)
         for munic in self.municipalities:
             munic.get_neighbors()
+        
+        for munic in self.municipalities:
+            self._municipalities_mapping[munic.Municipality] = munic
 
     def _initialize_pastures(self):
         """
