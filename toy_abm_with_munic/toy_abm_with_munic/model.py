@@ -7,13 +7,15 @@ Created on Thu May 21 09:45:34 2020
 
 import pandas as pd
 import geopandas as gpd
+import pathlib
 
 import mesa
 import mesa.time
 import mesa.datacollection
 import mesa_geo
 
-import agents
+from . import agents
+from .model_inputs import farmers_data, farms_data, payments
 
 
 # Functions for datacollector
@@ -59,7 +61,7 @@ class SBPAdoption(mesa.Model):
 
     """
 
-    def __init__(self, farmers_data, farms_data, payments, seed=None):
+    def __init__(self, payments=payments, seed=None):
         """
         Initalization of the model.
 
@@ -100,7 +102,7 @@ class SBPAdoption(mesa.Model):
         self._adoptable_pastures = []
         self._pastures_mapping = {}
         self._initialize_pastures()
-
+ 
         # Farmers and farms instantiation
         self._replace_strings_with_objects(self._farms_data,
                                            'Municipality',
@@ -279,7 +281,8 @@ class SBPAdoption(mesa.Model):
 
         """
 
-        municipalities_shp = "..\data\counties_shp\concelhos.shp"
+        municipalities_shp = (pathlib.Path(__file__).parent.parent / 'data'
+                              / 'counties_shp' / 'concelhos.shp')
         municipalities_data = gpd.read_file(municipalities_shp)
 
         useful_cols = ['CCA_2', 'NAME_2', 'NAME_1', 'geometry']
@@ -299,9 +302,9 @@ class SBPAdoption(mesa.Model):
         self.municipalities = AC.from_GeoDataFrame(gdf=municipalities_selected,
                                                    unique_id='CCA_2')
         
-        self.grid.add_agents(self.municipalities)
-        for munic in self.municipalities:
-            munic.get_neighbors()
+        # self.grid.add_agents(self.municipalities)
+        # for munic in self.municipalities:
+        #     munic.get_neighbors()
         
         for munic in self.municipalities:
             self._municipalities_mapping[munic.Municipality] = munic

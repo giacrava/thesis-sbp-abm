@@ -53,6 +53,10 @@ class Farm:
         self.pasture_type = farm_data['Pasture']
         self.municipality = farm_data['Municipality']
 
+        self.municipality.farms.append(self)
+        if self.pasture_type.type == 'Sown Permanent Pasture':
+            self.municipality.adoptedSBP += 1
+
     def pastures_adoption_evaluation(self):
         """
         Method called by the step method of the farmer who owns the farm to
@@ -84,6 +88,7 @@ class Farm:
                 idx_max_diff_npv = npvs_differential.index(max_diff_npv)
                 pasture_to_adopt = farm_adoptable_pastures[idx_max_diff_npv]
                 self.pasture_type = pasture_to_adopt
+                self.municipality.adoptedSBP += 1
 
     def _get_differential_npvs(self, farm_adoptable_pastures):
         """

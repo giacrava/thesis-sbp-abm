@@ -38,6 +38,8 @@ class Municipality(GeoAgent):
         """
         super().__init__(unique_id, model, shape)
         self.neighbors = []
+        self.farms = []
+        self.adoptedSBP = 0
 
     def get_neighbors(self):
         """
