@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jul 13 15:51:44 2020
-
-@author: giaco
-"""
 
 from mesa_geo.geoagent import GeoAgent
 
@@ -19,36 +14,44 @@ class Municipality(GeoAgent):
     Attributes
     ----------
     neighbors : list
-        Neighboring Municipality objects
+        Names (strings) of the neighboring Municipality objects
+    Municipality: str
+        Name of the municipality
+    District : str
+        Name of the district of which municipality is part
 
     Methods
     ----------
     get_neighbors
-        Retrieve the neighboring Municipality objects 
+        Retrieve the names of the neighboring Municipality objects
 
     """
+
     def __init__(self, unique_id, model, shape):
         """
-
-
-        Returns
-        -------
-        None.
+        Initialize a Municipality agent.
 
         """
         super().__init__(unique_id, model, shape)
+
         self.neighbors = []
         self.farms = []
         self.adoptedSBP = 0
 
+        # Attributes set by the Agent Creator from the shapefile read
+        self.Municipality = ""
+        self.District = ""
+
     def get_neighbors(self):
         """
         Called by the model during instantiation of Municiapalities.
-        
-        Get touching neighbors.
+
+        Get touching neighbors (a list of their names, to avoid errors during
+        the serialization in Json format for the visualization).
+
         To get them based on a certain distance, use
         get_neighbors_within_distance grid's method instead.
 
-
         """
-        self.neighbors = self.model.grid.get_neighbors(self)
+        neighbors = self.model.grid.get_neighbors(self)
+        self.neighbors = [neighbor.Municipality for neighbor in neighbors]

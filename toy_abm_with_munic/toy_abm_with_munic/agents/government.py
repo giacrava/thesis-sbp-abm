@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 28 14:53:03 2020
 
-@author: giaco
-"""
 import abc
 
 import mesa

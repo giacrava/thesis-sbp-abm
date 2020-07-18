@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 28 14:52:56 2020
-
-@author: giaco
-"""
+from ..mapping_class import mappings
 
 
 class Farm:
@@ -53,9 +49,11 @@ class Farm:
         self.pasture_type = farm_data['Pasture']
         self.municipality = farm_data['Municipality']
 
-        self.municipality.farms.append(self)
+        self.municipality.farms.append(self.code)
         if self.pasture_type.type == 'Sown Permanent Pasture':
             self.municipality.adoptedSBP += 1
+
+        mappings.farms[self.code] = self
 
     def pastures_adoption_evaluation(self):
         """
@@ -71,18 +69,14 @@ class Farm:
             pasture and adopt it
 
         """
-
-        # print("farm", self.code, "step")
-
         farm_adoptable_pastures = [pasture for pasture
                                    in self.model_adoptable_pastures
                                    if pasture != self.pasture_type]
 
         if farm_adoptable_pastures:
-            npvs_differential = self._get_differential_npvs(farm_adoptable_pastures)
-
-            # print(npvs_differential)
-
+            npvs_differential = self._get_differential_npvs(
+                farm_adoptable_pastures
+                )
             if any([npv > 0 for npv in npvs_differential]):
                 max_diff_npv = max(npvs_differential)
                 idx_max_diff_npv = npvs_differential.index(max_diff_npv)

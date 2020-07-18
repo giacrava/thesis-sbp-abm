@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat May 23 16:30:47 2020
-
-@author: giaco
-"""
 
 from toy_abm_with_munic import model
 

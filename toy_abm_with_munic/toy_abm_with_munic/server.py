@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 21 09:43:17 2020
 
-@author: giaco
-"""
 from mesa.visualization.modules import TextElement
 from mesa_geo.visualization.MapModule import MapModule
 from mesa_geo.visualization.ModularVisualization import ModularServer
@@ -20,18 +16,16 @@ class FarmersAdoption(TextElement):
         adopted = '{0:.2f}'.format(get_percentage_adopted(model))
         return "Percentage of farmers that have adopted: {}".format(adopted)
 
+
 def map_draw(agent):
     """
     Portrayal Method for canvas
     """
     portrayal = dict()
-    portrayal["color"] = "Blue"
-    # if agent.atype is None:
-    #     portrayal["color"] = "Grey"
-    # elif agent.atype == 0:
-    #     portrayal["color"] = "Red"
-    # else:
-    #     portrayal["color"] = "Blue"
+    if agent.adoptedSBP == 0:
+        portrayal["color"] = "Grey"
+    else:
+        portrayal["color"] = "Blue"
     return portrayal
 
 

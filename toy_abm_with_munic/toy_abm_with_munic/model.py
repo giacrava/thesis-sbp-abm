@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 21 09:45:34 2020
-
-@author: giaco
-"""
 
 import pandas as pd
 import geopandas as gpd
@@ -15,6 +10,7 @@ import mesa.datacollection
 import mesa_geo
 
 from . import agents
+from .mapping_class import mappings
 from .model_inputs import farmers_data, farms_data, payments
 
 
@@ -93,24 +89,21 @@ class SBPAdoption(mesa.Model):
         self.market = agents.Market(self.next_id(), self)
 
         # Municipalities instantiation
-        self.municipalities = []
-        self._municipalities_mapping = {}
         self._initialize_municipalities()
 
         # Pastures instantiation
         self._possible_pastures = []
         self._adoptable_pastures = []
-        self._pastures_mapping = {}
         self._initialize_pastures()
  
         # Farmers and farms instantiation
         self._replace_strings_with_objects(self._farms_data,
-                                           'Municipality',
-                                           self._municipalities_mapping)
+                                            'Municipality',
+                                            mappings.municipalities)
         
         self._replace_strings_with_objects(self._farms_data,
                                            'Pasture',
-                                           self._pastures_mapping)
+                                           mappings.pastures)
 
         self._total_farmers = 0
         self._initialize_farmers_and_farms(self._farmers_data)
@@ -276,7 +269,7 @@ class SBPAdoption(mesa.Model):
         Load the shapefile of the municipalities, select the data relative to
         the districts of interest, instantiate the municipalities, create the
         grid with them and make each retrieve the neighbors municipalities.
-        Also, creates the municipalities mapping dictionary, necessary to 
+        Also, creates the municipalities mapping dictionary, necessary to
         replace in the farms dataset the strings with the relative objects.
 
         """
@@ -299,15 +292,15 @@ class SBPAdoption(mesa.Model):
 
         AC = mesa_geo.AgentCreator(agent_class=agents.Municipality,
                                    agent_kwargs={"model": self})
-        self.municipalities = AC.from_GeoDataFrame(gdf=municipalities_selected,
-                                                   unique_id='CCA_2')
-        
-        # self.grid.add_agents(self.municipalities)
-        # for munic in self.municipalities:
-        #     munic.get_neighbors()
-        
-        for munic in self.municipalities:
-            self._municipalities_mapping[munic.Municipality] = munic
+        municipalities = AC.from_GeoDataFrame(gdf=municipalities_selected,
+                                              unique_id='CCA_2')
+
+        self.grid.add_agents(municipalities)
+        for munic in municipalities:
+            munic.get_neighbors()
+
+        for munic in municipalities:
+            mappings.municipalities[munic.Municipality] = munic
 
     def _initialize_pastures(self):
         """
@@ -318,7 +311,7 @@ class SBPAdoption(mesa.Model):
             have
             - adoptable_pastures, containing all the pastures that a farmers
             can consider for adoption
-            - pastures_mapping, used to replace in the excel data the pastures
+            - mapping.pastures, used to replace in the excel data the pastures
             with the corresponging pasture object.
 
         """
@@ -332,7 +325,7 @@ class SBPAdoption(mesa.Model):
         for pasture_class in possible_pastures:
             pasture_object = pasture_class(self)
             self._possible_pastures.append(pasture_object)
-            self._pastures_mapping[pasture_object.type] = pasture_object
+            mappings.pastures[pasture_object.type] = pasture_object
 
         self._adoptable_pastures = [
             pasture for pasture in self._possible_pastures

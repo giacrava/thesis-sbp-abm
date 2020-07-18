@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat May 23 16:40:17 2020
 
-@author: giaco
-"""
 import abc
-import random
 
 
 class Pasture:

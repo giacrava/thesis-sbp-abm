@@ -37,7 +37,8 @@ class Farmer(mesa.Agent):
 
     def __init__(self, unique_id, model, farmer_data):
         """
-        Initialize the farmer and the farms that it owns.
+        Initialize the farmer and the farms that it owns (adding it to the
+        mappings)
 
         Parameters
         ----------
