@@ -53,10 +53,11 @@ class Government(mesa.Agent, abc.ABC):
 class SownPermanentPasturesGovernment(Government):
     """
     Agent reporting the payments regarding Sown Permanent Pastures
+
     Attributes
     ----------
     pasture_type : str
-        The pasture type they report the payment for
+        The pasture type it reports the payment for
 
     payment : dict
         Report the payment for adoption from 2009 to 2014

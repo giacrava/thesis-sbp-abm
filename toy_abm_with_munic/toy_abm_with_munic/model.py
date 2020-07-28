@@ -11,7 +11,7 @@ import mesa_geo
 
 from . import agents
 from .mapping_class import mappings
-from .model_inputs import farmers_data, farms_data, payments
+from .model_inputs import farmers_data, farms_data, payments, discount_rate
 
 
 # Functions for datacollector
@@ -57,7 +57,10 @@ class SBPAdoption(mesa.Model):
 
     """
 
-    def __init__(self, payments=payments, seed=None):
+    def __init__(self, 
+                 payments=payments, 
+                 discount_rate=discount_rate, 
+                 seed=None):
         """
         Initalization of the model.
 
@@ -86,7 +89,7 @@ class SBPAdoption(mesa.Model):
         self._load_farms_data(farms_data)
 
         self.pasture_governments = self._initialize_governments(payments)
-        self.market = agents.Market(self.next_id(), self)
+        self.markets = self._initialize_markets(discount_rate)
 
         # Municipalities instantiation
         self._initialize_municipalities()
@@ -95,16 +98,14 @@ class SBPAdoption(mesa.Model):
         self._possible_pastures = []
         self._adoptable_pastures = []
         self._initialize_pastures()
- 
+
         # Farmers and farms instantiation
         self._replace_strings_with_objects(self._farms_data,
-                                            'Municipality',
-                                            mappings.municipalities)
-        
+                                           'Municipality',
+                                           mappings.municipalities)
         self._replace_strings_with_objects(self._farms_data,
                                            'Pasture',
                                            mappings.pastures)
-
         self._total_farmers = 0
         self._initialize_farmers_and_farms(self._farmers_data)
 
@@ -261,6 +262,19 @@ class SBPAdoption(mesa.Model):
             obj = government_subclass(self.next_id(), self, payments)
             pasture_governments[obj.pasture_type] = obj
         return pasture_governments
+
+    def _initialize_markets(self, discount_rate):
+        """
+        Called by the __init__ method.
+
+        Instantiate the Market subclasses and returns the dictionary markets.
+
+        """
+        markets = {}
+        for market_subclass in agents.Market.__subclasses__():
+            obj = market_subclass(self.next_id(), self, discount_rate)
+            markets[obj.pasture_type] = obj
+        return markets
 
     def _initialize_municipalities(self):
         """

@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 28 14:52:56 2020
-
-@author: giaco
-"""
-
 
 class Farm:
     """

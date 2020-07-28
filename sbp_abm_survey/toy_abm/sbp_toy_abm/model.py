@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 21 09:45:34 2020
-
-@author: giaco
-"""
 
 import pandas as pd
 
@@ -11,7 +6,8 @@ import mesa
 import mesa.time
 import mesa.datacollection
 
-import agents
+from . import agents
+from .model_inputs import farmers_data, farms_data, payments, discount_rate
 
 
 def get_percentage_adopted(model):
@@ -56,7 +52,10 @@ class SBPAdoption(mesa.Model):
 
     """
 
-    def __init__(self, farmers_data, farms_data, payments, seed=None):
+    def __init__(self,
+                 payments=payments,
+                 discount_rate=discount_rate,
+                 seed=None):
         """
         Initalization of the model.
 
@@ -75,6 +74,8 @@ class SBPAdoption(mesa.Model):
 
         super().__init__()
 
+        self.schedule = mesa.time.RandomActivation(self)
+
         self._farmers_data = []
         self._load_farmers_data(farmers_data)
 
@@ -82,15 +83,13 @@ class SBPAdoption(mesa.Model):
         self._load_farms_data(farms_data)
 
         self.pasture_governments = self._initialize_governments(payments)
-        self.market = agents.Market(self.next_id(), self)
+        self.markets = self._initialize_markets(discount_rate)
 
         # Pastures instantiation
         self._possible_pastures = []
         self._adoptable_pastures = []
         self._pastures_mapping = {}
         self._initialize_pastures()
-
-        self.schedule = mesa.time.RandomActivation(self)
 
         # Farmers and farms instantiation
         self._replace_strings_with_objects(self._farms_data,
@@ -242,7 +241,7 @@ class SBPAdoption(mesa.Model):
         """
         Called by the __init__ method.
 
-        Instantiate the Government subclasses and create the dictionary
+        Instantiate the Government subclasses and returns the dictionary
         pasture_governments.
 
         """
@@ -251,6 +250,19 @@ class SBPAdoption(mesa.Model):
             obj = government_subclass(self.next_id(), self, payments)
             pasture_governments[obj.pasture_type] = obj
         return pasture_governments
+
+    def _initialize_markets(self, discount_rate):
+        """
+        Called by the __init__ method.
+
+        Instantiate the Market subclasses and returns the dictionary markets.
+
+        """
+        markets = {}
+        for market_subclass in agents.Market.__subclasses__():
+            obj = market_subclass(self.next_id(), self, discount_rate)
+            markets[obj.pasture_type] = obj
+        return markets
 
     def _initialize_pastures(self):
         """

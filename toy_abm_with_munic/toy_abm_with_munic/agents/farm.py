@@ -29,8 +29,8 @@ class Farm:
         differential NPV respect to the actual one.
 
     """
-    def __init__(self, owner, unique_id, model_adoptable_pastures, farm_data):#,
-                 #municipality):
+
+    def __init__(self, owner, unique_id, model_adoptable_pastures, farm_data):
         """
         Parameters
         ----------

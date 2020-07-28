@@ -6,8 +6,16 @@ class Mappings:
 
     Attributes
     ----------
-    farmers_data : pd dataframe
-        Farmers data retrieved from excel file
+    farms : dict
+        Links each farm object (the values) to a string representing their ID
+        in the farms database
+        (the keys)
+    municipialities : dict
+        Links each Municipality object (the values) to a string representing
+        their name (the keys)
+    pastures : dict
+        Links each Pasture object (the values) to a string representing their
+        type (the keys)
 
     Methods
     ----------

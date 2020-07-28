@@ -4,7 +4,7 @@ Created on Thu May 21 09:45:52 2020
 
 @author: giaco
 """
-from agents.market import Market
-from agents.government import Government
-from agents.pastures import Pasture, AdoptablePasture
-from agents.farmer import Farmer
+from .market import Market
+from .government import Government
+from .pastures import Pasture, AdoptablePasture
+from .farmer import Farmer

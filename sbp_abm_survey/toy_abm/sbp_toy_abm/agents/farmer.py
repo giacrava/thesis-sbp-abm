@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 28 14:52:30 2020
-
-@author: giaco
-"""
 
 import mesa
 
-from agents.farm import Farm
+from .farm import Farm
 
 
 class Farmer(mesa.Agent):

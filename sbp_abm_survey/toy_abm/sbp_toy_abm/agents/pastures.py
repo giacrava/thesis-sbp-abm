@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat May 23 16:40:17 2020
 
-@author: giaco
-"""
+
 import abc
-import random
 
 
 class Pasture:
@@ -27,7 +23,6 @@ class Pasture:
 
         """
         self.model = model
-        self.market = model.market
         self.type = ''
 
     def npv_keeping(self):
@@ -44,10 +39,12 @@ class NaturalPasture(Pasture):
     ----------
     type : str
         String characterizing the pasture, to associate from database
+    market : NaturalPasture object
+        Agent responsible to report the economic data for natural pastures.
 
     Methods
     ----------
-    NPV_keeping
+    npv_keeping
         Returns the NPV of keeping the pasture.
 
 
@@ -62,6 +59,7 @@ class NaturalPasture(Pasture):
         """
         super().__init__(model)
         self.type = 'Natural Pasture'
+        self.market = self.model.markets[self.type]
 
     def npv_keeping(self):
         return self.model.random.randint(1, 5)
@@ -85,12 +83,15 @@ class SownPermanentPasture(AdoptablePasture):
 
     Attributes
     ----------
-    government: SownPermanentPasturesGovernment object
+    government : SownPermanentPasturesGovernment object
         Agent responsible to report the payments for sown permanent pastures.
+    market : SownPermanentPasturesMarket object
+        Agent responsible to report the economic data for sown permanent
+        pastures.
 
     Methods
     ----------
-    NPV_adoption
+    npv_adoption
 
 
     """
@@ -103,6 +104,7 @@ class SownPermanentPasture(AdoptablePasture):
         super().__init__(model)
         self.type = 'Sown Permanent Pasture'
         self.government = self.model.pasture_governments[self.type]
+        self.market = self.model.markets[self.type]
 
     def npv_adoption(self, pasture_area, farmer_education):
         # Calculate initial investment

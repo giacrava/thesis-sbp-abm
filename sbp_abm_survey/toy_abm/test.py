@@ -1,23 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat May 23 16:30:47 2020
 
-@author: giaco
-"""
-
-import model
-
-farmers_data = "../data/FarmersData.xlsx"
-farms_data = "../data/FarmsData.xlsx"
-
-# Give payments in €/hectare, one entry for each year 
-## WILL HAVE TO CONSIDER FOR HOW MANY YEARS
-sbp_payment = [50, 50, 50]
-
-payments = {'Sown Permanent Pasture': sbp_payment}
+from sbp_toy_abm import model
 
 
-modelSBP = model.SBPAdoption(farmers_data, farms_data, payments, seed=0)
+modelSBP = model.SBPAdoption()
 modelSBP.step()
 
 
