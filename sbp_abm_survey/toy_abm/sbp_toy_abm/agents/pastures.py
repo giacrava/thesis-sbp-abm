@@ -2,6 +2,7 @@
 
 
 import abc
+import numpy as np
 
 
 class Pasture:
@@ -62,7 +63,19 @@ class NaturalPasture(Pasture):
         self.market = self.model.markets[self.type]
 
     def npv_keeping(self):
-        return self.model.random.randint(1, 5)
+        """
+        Calculates the NPV of keeping a natural pasture over 10 years.
+
+        Returns
+        -------
+        npv : float
+            NPV of keeping the actual pasture over 10 years
+
+        """
+        cash_flows = self.market.installation + self.market.maintenance
+        npv = np.npv(self.market.discount_rate, cash_flows)
+        return npv
+        # return self.model.random.randint(1, 5)
 
 
 class AdoptablePasture(Pasture, abc.ABC):
@@ -105,11 +118,45 @@ class SownPermanentPasture(AdoptablePasture):
         self.type = 'Sown Permanent Pasture'
         self.government = self.model.pasture_governments[self.type]
         self.market = self.model.markets[self.type]
+        self._education_confidence = {'Primary': 0.4,
+                                      'Secondary': 0.6,
+                                      'Undergraduate': 0.8,
+                                      'Graduate': 0.8}
 
-    def npv_adoption(self, pasture_area, farmer_education):
-        # Calculate initial investment
-        # Calculate yearly revenues (not including only PCF support)
-        # Calculate yearly costs
-        # Retrieve payments for adoption by PCF
-        # Calculate NPV as Revenues + PCF_subs - costs
-        return self.model.random.randint(2, 6)
+    def npv_adoption(self, farmer_education, current_pasture):
+        """
+        Calculates the NPV of adopting the AdoptablePasture over 10 years.
+
+        Returns
+        -------
+        npv : float
+            NPV of adopting the AdoptablePasture over 10 years
+
+        """
+
+        # Calculates perceived costs
+        confidence = self._education_confidence[farmer_education]
+        expected_maintenance_SBP = [
+            el * confidence for el in self.market.maintenance
+            ]
+        expected_maintenance_NP = [
+            el * (1 - confidence) for el in current_pasture.market.maintenance
+            ]
+        print(expected_maintenance_SBP)
+        print(expected_maintenance_NP)
+        expected_maintenance = [
+            c_sbp + c_np for c_sbp, c_np in zip(expected_maintenance_SBP,
+                                                expected_maintenance_NP)
+            ]
+        expected_costs = self.market.installation + expected_maintenance
+
+        # Add payments to cash flows
+        cash_flows = expected_costs
+        for y in range(len(self.government.payments)):
+            cash_flows[y] += self.government.payments[y]
+        print(cash_flows)
+
+        npv = np.npv(self.market.discount_rate, cash_flows)
+        print(npv)
+        return npv
+        # return self.model.random.randint(2, 6)

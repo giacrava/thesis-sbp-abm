@@ -77,4 +77,4 @@ class SownPermanentPasturesGovernment(Government):
         """
         super().__init__(unique_id, model)
         self.pasture_type = 'Sown Permanent Pasture'
-        self.payment_by_year = self._retrieve_payments(payments)
+        self.payments = self._retrieve_payments(payments)

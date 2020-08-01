@@ -34,6 +34,10 @@ class NaturalPasturesMarket(Market):
     ----------
     pasture_type : str
         The pasture type the data are reported for
+    installation : float
+        Cash flow for the installation (year 0)
+    maintenance : float
+        Cash flows for the years 1-9
 
     """
 
@@ -48,6 +52,9 @@ class NaturalPasturesMarket(Market):
         super().__init__(unique_id, model, discount_rate)
         self.pasture_type = 'Natural Pasture'
 
+        self.installation = [0]
+        self.maintenance = [-58, 0, 0, 0, 0, -58, 0, 0, 0]
+
 
 class SownPermanentPasturesMarket(Market):
     """
@@ -57,6 +64,10 @@ class SownPermanentPasturesMarket(Market):
     ----------
     pasture_type : str
         The pasture type the data are reported for
+    installation : float
+        Cash flow for the installation (year 0)
+    maintenance : float
+        Cash flows for the years 1-9
 
     """
 
@@ -70,3 +81,6 @@ class SownPermanentPasturesMarket(Market):
         """
         super().__init__(unique_id, model, discount_rate)
         self.pasture_type = 'Sown Permanent Pasture'
+
+        self.installation = [-727]
+        self.maintenance = [0, -137, 0, -319, 0, -137, 0, -319, 0]

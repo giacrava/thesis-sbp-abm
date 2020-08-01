@@ -66,14 +66,12 @@ class SBPAdoption(mesa.Model):
 
         Parameters
         ----------
-        farmers_data : str
-            Path to the excel file with the farmers data. Cannot have
-            multiple rows referring to the same farmer (i.e. with the same ID)
-        farmers_data : str
-            Path to the excel file with the farms data. There has to be at
-            least one farm per each farmer and the ID columns have to match
         payments : dict
             Maps each pasture type to the realtive payment
+        discount_rate : float
+            Discount rate for economic calculations
+        seed : int
+            Seed for pseudonumber generation
 
         """
 
