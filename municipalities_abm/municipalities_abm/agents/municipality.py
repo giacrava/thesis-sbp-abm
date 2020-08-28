@@ -34,7 +34,8 @@ class Municipality(GeoAgent):
 
         self.neighbors = []
 
-        # Attributes set by the Agent Creator from the shapefile read
+        # Attributes set by the Agent Creator from the Shapefile during the
+        # initialization
         self.Municipality = ""
         self.District = ""
 
@@ -51,6 +52,6 @@ class Municipality(GeoAgent):
         """
         neighbors = self.model.grid.get_neighbors(self)
         self.neighbors = [neighbor.Municipality for neighbor in neighbors]
-    
+
     def step(self):
         pass

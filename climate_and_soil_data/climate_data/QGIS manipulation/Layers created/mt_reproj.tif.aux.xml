@@ -1,0 +1,360 @@
+<PAMDataset>
+  <Metadata>
+    <MDI key="daily_mean_temperature#add_offset">0</MDI>
+    <MDI key="daily_mean_temperature#long_name">mean temperature</MDI>
+    <MDI key="daily_mean_temperature#scale_factor">0.0099999998</MDI>
+    <MDI key="daily_mean_temperature#standard_name">air_temperature</MDI>
+    <MDI key="daily_mean_temperature#units">Celsius</MDI>
+    <MDI key="latitude#axis">Y</MDI>
+    <MDI key="latitude#long_name">Latitude values</MDI>
+    <MDI key="latitude#standard_name">latitude</MDI>
+    <MDI key="latitude#units">degrees_north</MDI>
+    <MDI key="longitude#axis">X</MDI>
+    <MDI key="longitude#long_name">Longitude values</MDI>
+    <MDI key="longitude#standard_name">longitude</MDI>
+    <MDI key="longitude#units">degrees_east</MDI>
+    <MDI key="NC_GLOBAL#Conventions">CF-1.4</MDI>
+    <MDI key="NC_GLOBAL#E-OBS_version">21.0e</MDI>
+    <MDI key="NC_GLOBAL#References">http://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php</MDI>
+    <MDI key="NETCDF_DIM_EXTRA">{time}</MDI>
+    <MDI key="NETCDF_DIM_time_DEF">{24,4}</MDI>
+    <MDI key="NETCDF_DIM_time_VALUES">{1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018}</MDI>
+    <MDI key="time#calendar">standard</MDI>
+    <MDI key="time#long_name">Time in years</MDI>
+    <MDI key="time#standard_name">time</MDI>
+    <MDI key="time#units">year</MDI>
+  </Metadata>
+  <PAMRasterBand band="1">
+    <UnitType>Celsius</UnitType>
+    <Histograms>
+      <HistItem>
+        <HistMin>685.4551997680664</HistMin>
+        <HistMax>1935.104858825684</HistMax>
+        <BucketCount>2000</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|1|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|1|0|0|0|0|1|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|2|0|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|2|0|1|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1|1|0|0|0|0|1|0|0|0|0|0|1|0|0|1|1|0|1|1|0|0|0|1|0|1|0|2|0|0|0|0|0|0|0|0|1|0|1|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|1|0|0|0|0|0|1|0|0|0|0|0|0|2|0|0|1|0|2|0|0|0|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|1|1|2|0|2|0|0|0|2|0|1|0|0|0|0|2|0|0|0|1|0|1|1|1|0|0|1|0|0|0|0|0|3|0|0|0|3|0|0|1|1|1|0|0|1|1|0|2|0|0|0|0|0|1|1|0|0|0|1|0|0|0|1|0|1|0|0|0|2|0|0|0|1|0|0|0|1|2|0|0|2|0|1|2|1|1|0|0|0|0|1|0|0|0|0|0|2|0|0|1|0|0|1|1|2|0|0|1|0|0|0|1|0|0|0|0|0|1|1|1|1|0|0|1|0|1|1|0|0|1|1|0|2|0|4|0|0|0|0|0|0|0|0|0|1|1|0|0|3|1|2|1|1|0|2|1|2|1|2|1|0|0|0|2|1|0|1|1|0|1|3|1|0|0|2|1|0|2|2|0|1|3|1|2|1|0|0|1|1|1|1|0|0|0|0|0|3|2|0|1|0|0|1|1|0|0|0|3|1|2|3|1|1|0|0|1|2|0|0|1|0|2|1|0|2|0|1|0|0|2|2|2|1|2|3|3|1|0|2|2|2|0|1|1|1|1|2|1|0|1|0|1|3|1|0|3|1|1|1|1|2|0|0|0|1|0|2|1|1|2|0|0|1|1|0|0|2|4|2|0|4|4|2|0|2|1|2|1|1|3|2|5|1|1|0|1|2|2|1|2|1|2|1|1|0|5|2|0|3|3|0|1|1|2|0|0|2|2|0|0|0|0|0|1|0|0|0|1|2|2|1|0|0|2|1|2|0|2|0|1|2|0|0|0|1|1|0|0|1|1|0|0|1|0|3|3|0|2|3|1|1|1|1|1|0|0|0|2|1|1|2|2|1|0|1|0|1|1|0|2|0|0|2|1|1|2|0|1|1|0|1|0|1|1|2|0|2|2|0|1|0|1|1|1|3|0|1|1|0|1|0|0|2|1|1|1|1|1|0|2|1|1|1|0|0|0|1|3|1|0|2|0|0|1|0|3|1|1|0|0|0|0|2|2|2|0|1|1|0|1|1|0|1|0|3|0|2|3|0|0|1|2|1|1|1|1|2|1|1|1|1|0|1|0|0|2|1|0|0|2|0|4|0|2|0|0|0|0|2|1|0|0|1|2|1|3|0|1|0|0|1|0|0|0|0|3|1|1|1|0|3|1|0|0|1|1|1|0|0|1|1|0|0|0|0|2|0|1|1|0|1|0|1|0|1|1|0|1|2|1|0|1|1|0|2|0|2|1|0|3|0|3|1|2|1|3|0|2|0|1|2|1|0|0|1|1|0|1|0|2|0|1|1|1|0|0|2|3|1|1|2|0|2|0|1|2|0|0|0|1|1|0|0|2|0|1|0|1|1|0|0|1|1|3|3|1|2|1|0|0|0|0|0|0|2|1|0|1|0|0|0|1|0|1|0|0|0|2|1|1|0|1|0|0|2|2|0|2|1|3|1|1|1|0|2|1|0|1|0|0|0|0|1|2|0|2|0|0|1|1|1|1|0|1|1|0|1|2|0|1|0|0|0|1|1|3|1|2|1|1|1|0|1|1|0|2|0|2|1|2|0|1|0|0|4|1|0|2|1|2|3|3|2|2|1|2|0|1|0|1|0|0|1|0|1|2|1|0|1|0|1|1|2|1|0|2|1|0|3|0|2|0|1|1|0|1|0|2|0|0|0|0|0|0|1|1|2|1|3|1|2|1|2|1|1|4|4|1|3|0|3|1|2|1|0|0|3|2|0|3|2|3|0|1|2|3|2|2|2|1|0|2|5|3|2|2|1|0|4|2|1|2|4|1|1|5|1|2|1|1|0|0|7|3|1|0|1|4|1|2|4|2|4|1|5|4|7|1|2|2|0|4|7|2|3|2|3|1|0|3|2|2|3|3|3|5|2|3|0|3|2|2|5|3|2|1|4|6|4|1|2|7|4|4|3|3|3|3|1|6|8|1|1|2|3|0|1|1|4|6|4|6|5|4|2|2|0|2|12|5|7|8|4|1|3|2|4|4|7|1|5|5|4|5|1|3|2|3|3|3|2|2|3|3|3|3|3|3|4|2|3|4|4|6|1|2|1|8|2|2|4|1|3|2|0|3|2|7|6|2|3|0|0|3|2|1|1|2|2|4|5|1|4|2|2|1|2|3|3|4|4|3|6|3|2|2|4|3|2|3|5|3|5|5|4|3|3|3|1|6|2|3|1|2|2|5|4|0|3|2|9|2|5|4|2|0|0|4|3|6|3|2|3|2|5|1|3|2|4|1|6|3|1|2|3|1|4|1|2|3|4|5|1|6|1|4|2|3|0|6|2|1|3|1|3|0|2|2|4|1|3|0|2|3|0|4|0|1|1|1|0|0|0|0|2|1|0|0|0|1|0|0|1|1|1|0|1|0|2|1|0|2|0|1|0|0|3|0|0|0|1|0|1|0|0|1|0|0|1|0|0|0|0|0|2|1|1|1|1|0|0|0|0|1|0|0|1|0|0|0|0|0|1|2|0|0|3|1|0|0|1|1|0|1|1|1|0|1|1|0|0|0|2|0|1|0|0|0|0|3|2|0|0|0|2|0|0|2|1|1|1|0|0|0|0|2|0|0|0|0|2|0|0|0|0|3|0|1|1|0|1|1|1|0|0|0|1|0|0|2|0|0|0|1|0|0|0|0|0|0|0|2|0|1|1|1|0|0|0|0|0|2|0|0|0|0|3|0|1|0|0|0|0|0|1|0|0|0|1|0|0|1|0|1|0|1|0|0|0|0|0|0|0|0|1|0|0|0|1|0|0|1|0|0|1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">1995</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1934.7926025391</MDI>
+      <MDI key="STATISTICS_MEAN">1556.1244977679</MDI>
+      <MDI key="STATISTICS_MINIMUM">685.76745605469</MDI>
+      <MDI key="STATISTICS_STDDEV">226.49053180697</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">61.92</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="2">
+    <UnitType>Celsius</UnitType>
+    <Histograms>
+      <HistItem>
+        <HistMin>706.8138039093018</HistMin>
+        <HistMax>1922.664772750855</HistMax>
+        <BucketCount>2000</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|0|1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|2|1|0|0|0|0|0|0|0|0|0|0|1|1|0|0|0|0|0|1|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|1|0|0|0|1|0|0|0|2|1|1|0|0|0|0|0|1|0|1|0|0|0|0|0|0|0|0|0|1|0|0|1|0|0|0|0|0|1|1|0|1|0|0|0|0|0|0|1|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|1|2|1|0|0|0|0|0|0|0|0|0|0|0|1|1|0|2|1|0|0|1|0|0|0|1|0|0|0|2|0|0|1|0|1|1|1|0|0|1|0|0|0|0|1|0|1|0|0|1|0|0|0|2|0|0|0|0|0|1|1|0|1|0|1|0|2|0|2|0|1|0|0|0|0|0|0|2|1|1|0|0|0|0|0|0|1|1|1|1|1|0|2|0|1|0|1|2|1|0|0|0|0|0|0|0|0|0|0|1|2|0|0|0|0|1|1|1|0|0|2|0|0|1|0|1|0|0|0|0|1|0|0|1|1|0|1|0|3|0|1|0|1|0|0|1|1|1|0|1|0|2|2|0|1|0|2|0|1|0|0|0|0|1|1|1|0|0|1|1|1|1|0|1|1|0|2|2|2|0|0|0|0|1|0|0|1|1|1|0|1|3|3|0|3|1|0|0|1|1|1|1|1|0|1|0|1|1|1|1|1|2|0|2|0|0|0|0|1|1|3|5|1|2|0|0|1|0|1|1|1|0|0|2|1|4|0|1|0|0|2|1|1|2|0|1|2|4|2|2|4|1|0|0|2|2|0|2|2|0|1|0|1|0|2|0|1|2|1|2|0|0|1|0|0|2|2|3|2|2|0|0|1|0|1|1|1|1|1|1|2|1|0|1|0|2|3|1|1|0|2|1|3|0|4|3|0|4|1|2|0|0|1|4|1|3|2|1|2|0|1|1|2|0|2|0|1|1|0|1|0|1|2|0|0|0|2|0|1|2|0|2|0|0|1|1|2|0|0|2|0|1|2|1|2|0|0|2|1|3|1|0|1|2|1|0|0|2|1|0|3|1|0|1|0|0|0|0|2|0|2|1|1|0|2|0|2|0|2|2|0|1|1|1|0|0|0|0|0|0|0|2|1|2|2|0|2|0|2|1|1|1|1|2|1|1|0|1|2|2|0|0|0|0|1|1|0|0|0|1|3|1|2|1|1|0|1|1|0|0|2|0|0|0|0|0|0|0|2|1|1|0|1|0|2|1|1|2|0|2|0|0|0|0|1|0|1|0|0|0|1|1|1|1|2|0|1|0|2|0|2|3|1|0|1|1|3|0|0|4|0|0|1|0|1|0|2|0|0|1|2|1|1|1|1|2|3|1|0|2|0|0|1|0|1|1|0|0|0|1|1|2|1|1|2|1|1|1|1|0|0|0|1|1|1|0|1|2|2|1|1|0|0|0|0|0|1|1|0|0|0|1|0|1|1|1|2|1|1|2|0|1|0|0|0|1|1|0|0|0|2|2|1|1|2|0|1|1|0|2|0|1|0|0|3|0|1|0|0|0|0|3|0|0|2|3|2|3|0|1|4|1|1|2|0|1|0|0|1|0|0|2|1|1|0|0|0|0|0|1|1|2|2|1|0|0|0|2|1|1|0|1|0|1|2|0|0|0|1|1|1|1|0|1|0|0|1|1|0|2|0|1|1|1|0|1|1|1|0|2|0|0|1|3|0|0|1|0|2|2|1|0|0|1|0|2|1|2|1|2|1|0|1|0|1|0|0|1|1|2|0|1|1|0|1|1|1|1|0|2|0|1|0|0|1|2|0|0|3|1|0|2|0|0|1|1|1|1|1|2|1|1|3|0|1|2|1|2|1|2|1|0|1|1|2|1|2|2|0|0|0|0|0|2|0|1|3|0|1|0|2|0|1|0|1|1|3|1|1|3|1|2|2|3|0|1|0|1|1|1|3|1|4|1|0|1|2|1|0|1|2|0|1|0|1|2|4|1|0|1|2|3|4|1|0|2|3|1|0|2|3|1|1|2|2|2|3|0|0|1|1|1|2|2|3|1|3|0|0|3|0|1|3|2|1|1|2|2|2|3|0|2|2|1|1|3|5|2|3|1|2|3|3|0|5|3|2|1|1|6|1|2|1|3|2|1|2|1|2|2|5|3|4|4|5|2|1|6|1|1|2|4|4|3|2|7|1|1|0|1|7|3|1|3|5|5|3|1|2|6|6|8|2|1|4|4|6|0|7|3|2|3|3|2|4|3|1|1|3|4|5|3|3|7|3|1|4|3|2|2|3|1|1|3|5|3|4|5|5|4|3|3|5|4|0|4|1|2|2|1|2|2|4|0|6|2|2|6|2|6|0|0|1|7|2|3|3|1|2|4|2|2|7|3|5|1|2|2|5|2|1|1|2|6|2|3|8|3|2|3|2|2|1|3|7|3|8|4|2|4|4|4|3|2|3|2|5|2|3|5|4|2|3|3|2|0|3|6|2|4|3|3|1|2|4|4|3|1|1|2|1|3|3|1|3|3|1|0|1|6|5|5|1|1|4|4|1|3|3|3|1|2|3|6|2|2|3|0|2|2|1|3|3|2|2|1|4|3|2|0|2|2|3|4|3|4|0|0|0|1|4|1|1|3|5|1|4|0|3|2|2|2|2|3|3|1|3|3|2|2|2|2|2|1|1|0|0|4|2|0|1|0|3|0|0|1|2|1|0|2|1|0|1|1|2|1|0|0|0|0|2|1|0|2|1|0|1|1|1|0|1|1|0|0|0|0|0|2|1|1|1|1|0|1|1|2|1|0|0|0|0|0|1|3|0|0|1|0|0|1|1|0|1|0|1|0|0|2|0|1|1|1|0|1|0|0|1|0|0|0|0|2|0|0|0|0|0|0|1|1|0|0|1|1|0|0|1|1|0|0|0|0|1|1|0|0|0|1|1|0|0|0|0|0|0|1|0|0|0|0|0|2|0|0|0|0|0|0|1|0|0|1|0|1|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|1|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">1996</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1922.3609619141</MDI>
+      <MDI key="STATISTICS_MEAN">1557.4367446805</MDI>
+      <MDI key="STATISTICS_MINIMUM">707.11761474609</MDI>
+      <MDI key="STATISTICS_STDDEV">222.69691315473</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">61.92</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="3">
+    <UnitType>Celsius</UnitType>
+    <Histograms>
+      <HistItem>
+        <HistMin>781.7358394775391</HistMin>
+        <HistMax>1958.594971069336</HistMax>
+        <BucketCount>2000</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|1|0|1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|1|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|1|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|1|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1|0|0|0|0|0|1|0|0|1|0|0|0|0|0|0|2|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|2|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|2|0|0|1|0|1|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|1|0|0|1|0|0|0|0|1|0|0|1|0|0|1|1|0|0|0|1|0|0|2|0|0|1|1|0|0|1|0|0|0|0|0|0|0|1|0|0|0|0|0|1|1|1|0|0|0|0|0|0|0|0|0|0|2|1|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|1|0|0|0|1|1|1|0|0|1|0|0|0|0|0|0|1|0|0|1|0|2|0|0|0|0|1|1|1|0|1|0|0|0|0|0|2|0|1|0|1|0|0|0|0|1|0|3|0|0|1|2|0|0|0|0|0|2|0|0|1|3|0|0|0|0|0|0|0|1|0|0|0|0|0|2|0|0|0|2|1|0|2|0|0|0|2|0|0|3|1|0|0|0|0|1|0|0|0|1|2|1|0|0|0|0|0|1|1|0|0|0|1|1|0|0|1|1|0|0|0|1|1|1|1|0|1|0|0|0|1|0|1|1|0|0|0|0|0|0|0|2|0|0|1|1|1|0|2|3|0|0|0|1|1|4|1|1|1|0|1|0|0|0|0|0|0|1|0|0|1|1|2|1|0|1|1|0|0|1|0|1|0|1|3|0|2|3|0|0|1|1|1|1|2|0|3|1|1|4|0|0|0|0|1|1|2|0|2|0|0|1|1|2|0|1|1|1|2|0|4|1|1|1|1|0|3|1|0|1|1|0|2|1|2|1|2|1|1|1|1|1|1|0|1|1|2|0|2|1|0|1|1|2|1|1|1|1|1|0|0|1|1|1|0|1|0|0|1|2|2|3|2|1|0|1|1|1|0|0|0|3|1|1|1|2|2|0|0|1|2|0|1|1|1|2|0|0|1|2|1|1|3|0|1|2|1|1|2|2|1|0|3|5|1|0|4|0|2|1|6|1|0|2|0|3|1|2|1|0|1|1|1|0|1|1|0|0|0|0|1|0|0|1|0|0|0|1|2|0|1|2|1|0|2|3|0|1|1|0|1|1|0|1|0|1|0|0|3|2|1|1|3|1|0|0|1|1|0|1|3|0|2|1|0|1|0|1|2|1|4|0|0|1|2|2|0|0|1|0|0|0|0|0|0|2|2|2|0|1|0|0|1|0|1|0|1|2|1|1|1|1|2|1|2|0|1|2|0|0|3|1|0|0|1|1|2|0|0|2|0|0|0|0|2|0|1|1|0|1|0|1|0|0|1|2|3|0|0|3|1|2|0|0|0|0|1|1|1|1|0|0|1|1|0|2|1|0|1|1|0|0|1|1|2|0|4|1|0|0|1|2|0|1|2|2|1|1|1|0|2|1|1|0|0|4|1|1|0|0|3|0|1|1|1|0|2|2|1|1|0|0|1|0|1|0|1|0|0|1|0|0|2|0|0|2|0|2|1|1|2|1|0|1|1|0|0|1|0|1|1|0|2|0|0|3|0|0|4|1|0|1|0|0|1|0|1|0|2|0|0|0|0|2|1|0|0|1|4|1|2|2|1|0|0|2|3|2|0|0|3|1|2|3|2|1|0|0|1|0|0|0|2|2|0|0|0|0|2|0|2|1|2|0|0|1|3|1|1|0|1|2|1|0|1|0|0|1|1|0|4|0|1|0|0|0|1|0|0|2|2|0|1|0|0|2|0|1|2|1|0|1|2|0|1|1|0|0|0|0|1|0|0|0|6|0|3|1|0|1|0|2|0|0|1|0|1|1|0|2|0|0|2|1|1|0|1|0|1|2|2|0|3|0|1|0|1|2|1|1|0|0|0|1|1|2|0|0|2|0|1|2|2|2|1|2|0|1|1|1|0|1|2|1|1|1|3|0|2|2|2|0|2|0|1|1|1|2|3|0|0|1|0|1|2|1|0|2|1|3|1|1|0|1|1|1|1|3|1|2|1|4|0|0|1|2|2|1|1|1|1|3|1|0|0|1|1|4|1|3|2|0|0|0|0|2|2|0|2|0|1|2|1|2|1|0|2|2|3|1|2|0|0|1|1|3|0|1|1|3|4|3|1|2|2|2|0|0|1|1|5|3|0|2|0|2|3|0|3|2|6|1|5|3|3|1|0|2|1|4|1|1|2|3|2|4|0|3|5|0|2|2|1|2|4|2|1|2|2|2|4|4|3|3|4|2|2|4|1|2|2|4|4|5|3|4|2|7|4|2|3|4|2|3|1|4|2|2|3|4|3|4|3|4|2|6|2|6|6|8|5|4|2|5|6|4|5|4|3|3|6|3|6|2|3|4|9|8|6|1|7|6|2|4|2|5|4|1|3|0|5|2|3|3|3|2|2|4|0|4|3|5|2|0|6|0|7|1|5|5|5|3|5|4|4|1|0|3|3|2|3|7|1|3|4|5|5|2|4|0|2|3|3|3|6|4|2|1|3|2|4|3|2|6|2|5|2|0|3|4|2|4|3|1|3|2|2|4|4|1|3|4|2|4|2|4|4|5|2|4|4|3|4|4|0|5|3|2|6|4|0|2|1|3|6|1|1|2|5|3|2|7|1|0|5|0|4|1|2|2|2|1|0|4|3|3|2|0|2|3|0|2|2|2|3|3|1|2|1|0|1|2|2|0|1|0|3|3|3|0|3|0|0|0|0|0|1|1|0|0|0|0|3|0|1|0|0|0|0|0|0|2|0|0|0|0|3|0|2|3|2|2|1|0|2|1|0|0|0|0|1|1|1|0|1|0|1|1|1|0|0|1|1|0|1|1|0|0|0|2|0|2|2|2|0|0|0|0|0|0|1|0|1|1|1|0|0|0|1|0|0|1|0|2|1|0|0|1|0|0|1|1|0|0|2|1|1|0|0|0|0|0|0|0|0|0|0|1|1|0|3|0|0|0|0|0|0|2|0|0|0|1|0|1|1|1|0|0|0|0|0|1|0|0|0|0|0|1|0|1|1|0|1|0|0|0|0|0|0|0|0|0|0|1|0|0|0|1|0|0|0|0|1|0|0|1|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|1</HistCounts>
+      </HistItem>
+    </Histograms>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">1997</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="STATISTICS_MAXIMUM">1958.3009033203</MDI>
+      <MDI key="STATISTICS_MEAN">1613.8235524811</MDI>
+      <MDI key="STATISTICS_MINIMUM">782.02990722656</MDI>
+      <MDI key="STATISTICS_STDDEV">212.15865668967</MDI>
+      <MDI key="STATISTICS_VALID_PERCENT">61.92</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="4">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">1998</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="5">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">1999</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="6">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2000</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="7">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2001</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="8">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2002</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="9">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2003</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="10">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2004</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="11">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2005</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="12">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2006</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="13">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2007</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="14">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2008</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="15">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2009</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="16">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2010</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="17">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2011</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="18">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2012</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="19">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2013</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="20">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2014</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="21">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2015</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="22">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2016</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="23">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2017</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+  <PAMRasterBand band="24">
+    <UnitType>Celsius</UnitType>
+    <Metadata>
+      <MDI key="add_offset">0</MDI>
+      <MDI key="long_name">mean temperature</MDI>
+      <MDI key="NETCDF_DIM_time">2018</MDI>
+      <MDI key="NETCDF_VARNAME">daily_mean_temperature</MDI>
+      <MDI key="scale_factor">0.0099999998</MDI>
+      <MDI key="standard_name">air_temperature</MDI>
+      <MDI key="units">Celsius</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>

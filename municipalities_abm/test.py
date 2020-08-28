@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+%load_ext autoreload
+%autoreload 2
 
 from municipalities_abm import model
 

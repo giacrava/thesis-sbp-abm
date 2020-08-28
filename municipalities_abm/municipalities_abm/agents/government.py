@@ -5,38 +5,58 @@ import mesa
 
 class Government(mesa.Agent):
     """
-
-
+    Class responsible to report the payments offered to adopt SBP.
+    
+    Attributes
+    ----------
+    sbp_payments : pandas Series
+        Payment offered to adopt SBP for each year 
+    
+    Methods
+    ----------
+    retrieve_payments
+        Retrieve the payment offered to adopt SBP in a specific year
+    
     """
 
     def __init__(self, unique_id, model, sbp_payments):
+        """
+        Parameters
+        ----------
+        sbp_payments : pandas Series
+            Payment offered to adopt SBP for each year
+
+        """
 
         super().__init__(unique_id, model)
-        self.sbp_payments = sbp_payments
+        self._sbp_payments = sbp_payments
+        
+    @property
+    def sbp_payments(self):
+        return self._sbp_payments
 
-    # def _retrieve_payments(self, payments): CAN BE CHANGED TO RETRIEVE THE YEAR!
-    #     """
-    #     Called by the Government sub-classes' __init__ method.
-    #     Extract the payments for the relative pasture type. If not available,
-    #     raise an exception.
+    def retrieve_payments(self, year):
+        """
+        Method to retrieve the payment offered to adopt SBP in a specific year.
 
-    #     Raises
-    #     ------
-    #     KeyError
-    #         Raised if the "payments" dictionary does not have a key
-    #         corresponding to the Pasture instance's attribute pasture_type
+        Parameters
+        ----------
+        year : int
+            Year for which the payment want to be retrieved
 
-    #     Returns
-    #     ------
-    #     dict
-    #         Payment relative to the pasture type the Government subclass deals
-    #         with
+        Raises
+        ------
+        KeyError
+            Raised if no data is available for the year requested
+    
+        Returns
+        ------
+        int
+            Payment offered in the year requested in €/hectare
 
-    #     """
-    #     try:
-    #         return payments[self.pasture_type]
-    #     except KeyError:
-    #         raise KeyError('Payment for ' + self.pasture_type + ' not provided'
-    #                        ', please include them in the "payments" dictionary'
-    #                        '.'
-    #                        )
+        """
+        try:
+            return self.sbp_payments.loc[year, 'Payment']
+        except KeyError:
+            raise KeyError('Payment for ' + self.year + ' not available.'
+                           'Year outside time span of the model.')
