@@ -8,6 +8,7 @@ class Municipality(GeoAgent):
     Class for Municipality object.
 
     Municipalities:
+        .....
 
     Attributes
     ----------
@@ -17,6 +18,8 @@ class Municipality(GeoAgent):
         Name of the municipality
     District : str
         Name of the district of which municipality is part
+    climate : MunicipalityClimate object
+        Entity reporting the climate for the municipality
 
     Methods
     ----------
@@ -38,6 +41,9 @@ class Municipality(GeoAgent):
         # initialization
         self.Municipality = ""
         self.District = ""
+
+        # Attibute set during initialization of MunicipalityClimate objects
+        self.climate = float('NaN')
 
     def get_neighbors(self):
         """

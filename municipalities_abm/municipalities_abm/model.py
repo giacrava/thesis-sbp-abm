@@ -10,7 +10,7 @@ import mesa.datacollection
 import mesa_geo
 
 from . import agents
-from .mapping_class import mappings
+# from .mapping_class import mappings
 from .model_inputs import sbp_payments_path, initial_year
 
 
@@ -70,6 +70,8 @@ class SBPAdoption(mesa.Model):
         self.government = self._initialize_governments(sbp_payments_path)
 
         self._initialize_municipalities()
+        
+        self._initialize_climates()
 
         # self.datacollector = mesa.datacollection.DataCollector(
         #     agent_reporters={
@@ -132,8 +134,37 @@ class SBPAdoption(mesa.Model):
         self.grid.add_agents(municipalities)
         for munic in municipalities:
             self.schedule.add(munic)
-            # munic.get_neighbors()
-            mappings.municipalities[munic.Municipality] = munic
+            munic.get_neighbors()
+            # mappings.municipalities[munic.Municipality] = munic
+
+    def _initialize_climates(self):
+        """
+        Called by the __init__ method.
+        
+        - Loads the climate data
+        - Instatiate for each Municipality the relative MunicipalityClimate
+          object and set it as an attribute of the Municipality
+
+        Returns
+        -------
+        None.
+
+        """
+        climate_data_path = (pathlib.Path(__file__).parent.parent
+                                   / 'data'
+                                   / 'municipalities_climate_for_abm.csv')
+        climate_data = pd.read_csv(climate_data_path,
+                                   index_col=['Municipality', 'Year'])
+
+        for munic in self.schedule.agents:
+            munic_name = munic.Municipality
+            try:
+                climate = agents.MunicipalityClimate(
+                    climate_data.loc[munic_name])
+            except KeyError:
+                print("Climate data for the municipality of", munic_name,
+                      "are missing.")
+            munic.climate = climate
 
     # The following methods are not used during the initiation of the model
 

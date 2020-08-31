@@ -7,3 +7,4 @@ Created on Thu May 21 09:45:52 2020
 
 from .municipality import Municipality
 from .government import Government
+from .climate import MunicipalityClimate
