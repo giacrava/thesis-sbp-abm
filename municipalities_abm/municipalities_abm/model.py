@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 import pandas as pd
 import geopandas as gpd
 import pathlib
@@ -75,7 +76,7 @@ class SBPAdoption(mesa.Model):
 
         self._initialize_municipalities()
         
-        self._initialize_climates()
+        self._initialize_environments()
 
         # self.datacollector = mesa.datacollection.DataCollector(
         #     agent_reporters={
@@ -100,6 +101,27 @@ class SBPAdoption(mesa.Model):
         government = agents.Government(self.next_id(), self, sbp_payments)
         return government
 
+    def _load_census_data(self):
+        """
+        Called by the _initialize_municipalities method.
+
+        Function to load the census data and set the relative attribute of each
+        Municipality.
+
+        """
+        census_data_path = (pathlib.Path(__file__).parent.parent
+                            / 'data' / 'census_data.csv')
+        census_data = pd.read_csv(census_data_path, index_col='Municipality')
+
+        for munic in self.schedule.agents:
+            munic_name = munic.Municipality
+            try:
+                munic_census_data = census_data.loc[munic_name]
+            except KeyError:
+                print("Census data for the municipality of",
+                      munic_name, "are missing.")
+            munic.census_data = munic_census_data
+
     def _initialize_municipalities(self):
         """
         Called by the __init__ method.
@@ -112,12 +134,13 @@ class SBPAdoption(mesa.Model):
         - Calls each municipality's method to retrieve its neighboring ones
         # - Creates the municipalities mapping dictionary, necessary to
         # replace in the farms dataset the strings with the relative objects.
+        - Call function to load census data and match with the municipality
 
         """
 
         municipalities_shp_path = (pathlib.Path(__file__).parent.parent
                                    / 'data' / 'municipalities_shp'
-                                   / 'concelhos_no_azores_and_madeira.shp')
+                                   / 'shapefile_for_munic_abm.shp')
         municipalities_data = gpd.read_file(municipalities_shp_path)
         municipalities_data.rename(columns={'Municipali': 'Municipality'},
                                    inplace=True)
@@ -128,10 +151,11 @@ class SBPAdoption(mesa.Model):
                                 data_is_null.any(axis=1)].index.tolist()
             raise ValueError('The municipalities dataset is missing values for'
                              ' the following municipalities: ' +
-                             ', '.join(munic_with_nan))
+                             ', '.join(munic_with_nan))     
 
         AC = mesa_geo.AgentCreator(agent_class=agents.Municipality,
-                                   agent_kwargs={"model": self})
+                                   agent_kwargs={"model": self,})
+        
         municipalities = AC.from_GeoDataFrame(gdf=municipalities_data,
                                               unique_id='CCA_2')
 
@@ -140,13 +164,15 @@ class SBPAdoption(mesa.Model):
             self.schedule.add(munic)
             munic.get_neighbors()
             # mappings.municipalities[munic.Municipality] = munic
+        
+        self._load_census_data()
 
-    def _initialize_climates(self):
+    def _initialize_environments(self):
         """
         Called by the __init__ method.
         
-        - Loads the climate data
-        - Instatiate for each Municipality the relative MunicipalityClimate
+        - Loads climate and soil data
+        - Instatiate for each Municipality the relative MunicipalityEnvironment
           object and set it as an attribute of the Municipality
 
         Returns
@@ -154,21 +180,39 @@ class SBPAdoption(mesa.Model):
         None.
 
         """
+        # climate_data_path = (pathlib.Path(__file__).parent.parent
+        #                            / 'data'
+        #                            / 'municipalities_climate_final.csv')
+        # climate_data = pd.read_csv(climate_data_path,
+        #                            index_col=['Municipality', 'Year'])
         climate_data_path = (pathlib.Path(__file__).parent.parent
-                                   / 'data'
-                                   / 'municipalities_climate_final.csv')
-        climate_data = pd.read_csv(climate_data_path,
-                                   index_col=['Municipality', 'Year'])
+                             / 'data'
+                             / 'municipalities_average_climate_final.csv')
+        soil_data_path = (pathlib.Path(__file__).parent.parent
+                          / 'data'
+                          / 'municipalities_soil_final.csv')
+        
+        average_climate_data = pd.read_csv(climate_data_path,
+                                           index_col=['Municipality'])
+        soil_data = pd.read_csv(soil_data_path,
+                                index_col=['Municipality'])
 
         for munic in self.schedule.agents:
             munic_name = munic.Municipality
             try:
-                climate = agents.MunicipalityClimate(
-                    climate_data.loc[munic_name])
+                munic_average_climate = average_climate_data.loc[munic_name]
             except KeyError:
-                print("Climate data for the municipality of", munic_name,
+                print("Average climate data for the municipality of",
+                      munic_name, "are missing.")
+            try:
+                munic_soil = soil_data.loc[munic_name]
+            except KeyError:
+                print("Soil data for the municipality of", munic_name,
                       "are missing.")
-            munic.climate = climate
+
+            environment = agents.MunicipalityEnvironment(
+                munic_average_climate, munic_soil)
+            munic.environment = environment
 
     # The following methods are not used during the initiation of the model
 

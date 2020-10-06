@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 from mesa_geo.geoagent import GeoAgent
 
 
@@ -17,7 +18,7 @@ class Municipality(GeoAgent):
     Municipality: str
         Name of the municipality
     District : str
-        Name of the district of which municipality is part
+        Name of the district which municipality is part of
     climate : MunicipalityClimate object
         Entity reporting the climate for the municipality
 
@@ -36,6 +37,9 @@ class Municipality(GeoAgent):
         super().__init__(unique_id, model, shape)
 
         self.neighbors = []
+        
+        # Attribute set during initialization of the municipalities
+        self.census_data = None
 
         # Attributes set by the Agent Creator from the Shapefile during the
         # initialization
@@ -43,7 +47,7 @@ class Municipality(GeoAgent):
         self.District = ""
 
         # Attibute set during initialization of MunicipalityClimate objects
-        self.climate = float('NaN')
+        self.environment = None
 
     def get_neighbors(self):
         """
@@ -52,8 +56,8 @@ class Municipality(GeoAgent):
         Get touching neighbors (a list of their names, to avoid errors during
         the serialization in Json format for the visualization).
 
-        To get them based on a certain distance, use
-        get_neighbors_within_distance grid's method instead.
+        # To get them based on a certain distance, use
+        # get_neighbors_within_distance grid's method instead.
 
         """
         neighbors = self.model.grid.get_neighbors(self)

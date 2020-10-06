@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 
+
 import mesa
 
 
 class Government(mesa.Agent):
     """
     Class responsible to report the payments offered to adopt SBP.
-    
+
     Attributes
     ----------
     sbp_payments : pandas Series
         Payment offered to adopt SBP for each year 
-    
+
     Methods
     ----------
     retrieve_payments
         Retrieve the payment offered to adopt SBP in a specific year
-    
+
     """
 
     def __init__(self, unique_id, model, sbp_payments):
@@ -48,7 +49,7 @@ class Government(mesa.Agent):
         ------
         KeyError
             Raised if no data is available for the year requested
-    
+
         Returns
         ------
         int
@@ -59,4 +60,4 @@ class Government(mesa.Agent):
             return self.sbp_payments.loc[year, 'Payment']
         except KeyError:
             raise KeyError('Payment for ' + self.year + ' not available.'
-                           'Year outside time span of the model.')
+                           'Year outside the time span of the model.')
