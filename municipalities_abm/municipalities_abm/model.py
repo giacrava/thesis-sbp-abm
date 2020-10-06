@@ -11,7 +11,7 @@ import mesa_geo
 
 from . import agents
 # from .mapping_class import mappings
-from .model_inputs import sbp_payments_path, initial_year
+from .model_inputs import sbp_payments_path
 
 
 # Functions for datacollector
@@ -46,7 +46,7 @@ class SBPAdoption(mesa.Model):
     """
 
     def __init__(self,
-                 initial_year=initial_year,
+                 initial_year=1996,
                  sbp_payments_path=sbp_payments_path, 
                  seed=None):
         """
@@ -54,8 +54,12 @@ class SBPAdoption(mesa.Model):
 
         Parameters
         ----------
+        initial_year : int
+            Year in the interval 1996 - 2018 in which the simulation has to
+            start
         sbp_payments : dict
-
+            Path to the spreadsheed with the total payment in €/hectare 
+            provided by the Portuguese Carbon Fund for each year.
         seed : int
             Seed for pseudonumber generation
 
@@ -152,7 +156,7 @@ class SBPAdoption(mesa.Model):
         """
         climate_data_path = (pathlib.Path(__file__).parent.parent
                                    / 'data'
-                                   / 'municipalities_climate_for_abm.csv')
+                                   / 'municipalities_climate_final.csv')
         climate_data = pd.read_csv(climate_data_path,
                                    index_col=['Municipality', 'Year'])
 
