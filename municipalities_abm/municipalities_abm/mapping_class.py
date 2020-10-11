@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pandas as pd
+
 class Mappings:
     """
     Class storing all the identificative string - object mappings.
@@ -17,7 +19,7 @@ class Mappings:
 
     def __init__(self):
 
-        self.municipalities = {}
+        self.municipalities = pd.Series()
 
     # def from_municipality_get_farms(self, municipality):
     #     """

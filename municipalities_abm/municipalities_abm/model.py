@@ -3,7 +3,10 @@
 
 import pandas as pd
 import geopandas as gpd
+import numpy as np
 import pathlib
+import csv
+import joblib
 
 import mesa
 import mesa.time
@@ -11,7 +14,7 @@ import mesa.datacollection
 import mesa_geo
 
 from . import agents
-# from .mapping_class import mappings
+from .mapping_class import mappings
 from .model_inputs import sbp_payments_path
 
 
@@ -39,7 +42,7 @@ class SBPAdoption(mesa.Model):
     """
     Model for SBP adoption.
 
-    Attributes
+    Attributes #TO UPDATE
     ----------
     municipalities_data : pd dataframe
 
@@ -47,8 +50,11 @@ class SBPAdoption(mesa.Model):
     """
 
     def __init__(self,
+                 # ml_model_path,
+                 ml_features_path="./ml_model/ml_features_for_abm.csv",
+                 ml_model_path = "./ml_model/ml_model",
                  initial_year=1996,
-                 sbp_payments_path=sbp_payments_path, 
+                 sbp_payments_path=sbp_payments_path,
                  seed=None):
         """
         Initalization of the model.
@@ -57,10 +63,16 @@ class SBPAdoption(mesa.Model):
         ----------
         initial_year : int
             Year in the interval 1996 - 2018 in which the simulation has to
-            start
+            start (the adoptions from this year will be predicted)
         sbp_payments : dict
             Path to the spreadsheed with the total payment in €/hectare 
-            provided by the Portuguese Carbon Fund for each year.
+            provided by the Portuguese Carbon Fund for each year
+        ml_model : path str
+            Path to the machine learning model already already fit to data, to 
+            be used for prediction of SBP adoption
+        ml_features : path str
+            Path to a List of names of the features on which the ML model was 
+            trained,in the same order as they were passed for training
         seed : int
             Seed for pseudonumber generation
 
@@ -68,15 +80,31 @@ class SBPAdoption(mesa.Model):
 
         super().__init__()
 
-        self._year = initial_year
-        self.schedule = mesa.time.RandomActivation(self)
+        if (initial_year < 1996):
+            raise ValueError("The model cannot be initialized in a year "
+                             "previous to 1996")
+        else:
+            self._year = initial_year
+        self.schedule = mesa.time.SimultaneousActivation(self)
         self.grid = mesa_geo.GeoSpace()
 
         self.government = self._initialize_governments(sbp_payments_path)
 
-        self._initialize_municipalities()
-        
+        self.perm_pastures_ha_port = None
+        self.yearly_adoption_ha_port = None
+        self.cumul_adoption_10y_ha_port = None
+        self.adoption_pr_y_port = None  # this and following names can be changed, put like this to resemble the features names
+        self.cumul_adoption_10_y_pr_y_port = None
+        self._initialize_municipalities_and_adoption()
+
         self._initialize_environments()
+
+        self._ml_model = joblib.load(ml_model_path)
+        self._ml_features = self._retrieve_ml_features(ml_features_path)
+
+        # Attribute updated by the municipalities to calculate total adoption
+        # in the year in Portugal
+        self._adoption_in_year_port_ha = 0
 
         # self.datacollector = mesa.datacollection.DataCollector(
         #     agent_reporters={
@@ -90,6 +118,26 @@ class SBPAdoption(mesa.Model):
     def year(self):
         return self._year
 
+    @year.setter
+    def year(self, new_val):
+        self._year = new_val
+
+    @property
+    def adoption_in_year_port_ha(self):
+        return self._adoption_in_year_port_ha
+
+    @adoption_in_year_port_ha.setter
+    def adoption_in_year_port_ha(self, new_val):
+        self._adoption_in_year_port_ha = new_val
+
+    @property
+    def ml_model(self):
+        return self._ml_model
+
+    @property
+    def ml_features(self):
+        return self._ml_features
+
     def _initialize_governments(self, sbp_payments_path):
         """
         Called by the __init__ method.
@@ -101,40 +149,21 @@ class SBPAdoption(mesa.Model):
         government = agents.Government(self.next_id(), self, sbp_payments)
         return government
 
-    def _load_census_data(self):
-        """
-        Called by the _initialize_municipalities method.
-
-        Function to load the census data and set the relative attribute of each
-        Municipality.
-
-        """
-        census_data_path = (pathlib.Path(__file__).parent.parent
-                            / 'data' / 'census_data.csv')
-        census_data = pd.read_csv(census_data_path, index_col='Municipality')
-
-        for munic in self.schedule.agents:
-            munic_name = munic.Municipality
-            try:
-                munic_census_data = census_data.loc[munic_name]
-            except KeyError:
-                print("Census data for the municipality of",
-                      munic_name, "are missing.")
-            munic.census_data = munic_census_data
-
-    def _initialize_municipalities(self):
+    def _initialize_municipalities_and_adoption(self):
         """
         Called by the __init__ method.
 
         - Loads the shapefile of the municipalities
         - Check that the file has no missing values
         - Instantiates the municipalities
+        - Call method to load data that need to be set as attribute of
+        municipalities and set them + to set model's attributes regarding
+        pastures and adoption in Portugal
         - Creates the space grid with the municipalities
         - Adds each municipality to the schedule
         - Calls each municipality's method to retrieve its neighboring ones
-        # - Creates the municipalities mapping dictionary, necessary to
-        # replace in the farms dataset the strings with the relative objects.
-        - Call function to load census data and match with the municipality
+        - Creates the municipalities mapping dictionary, necessary to
+        replace in the farms dataset the strings with the relative objects.
 
         """
 
@@ -155,17 +184,113 @@ class SBPAdoption(mesa.Model):
 
         AC = mesa_geo.AgentCreator(agent_class=agents.Municipality,
                                    agent_kwargs={"model": self,})
-        
+
         municipalities = AC.from_GeoDataFrame(gdf=municipalities_data,
                                               unique_id='CCA_2')
+
+        self._set_munic_attributes_from_data_and_adoption_in_port(
+            municipalities
+            )
 
         self.grid.add_agents(municipalities)
         for munic in municipalities:
             self.schedule.add(munic)
-            munic.get_neighbors()
-            # mappings.municipalities[munic.Municipality] = munic
-        
-        self._load_census_data()
+            munic.get_neighbors_and_pastures_area()
+            mappings.municipalities[munic.Municipality] = munic
+    def _set_munic_attributes_from_data_and_adoption_in_port(
+            self,
+            municipalities
+            ):
+        """
+        Called by the _initialize_municipalities method.
+
+        Method to load and set the relative attributes of each Municipality 
+        for census, adoption and permanent pastures area data.
+        Adoption data are also restricted to the years before the intial year
+        of the simulation, since the ones after are modelled.
+        It also calls the method pf the Municipalities to calculate the
+        cumulative adoption in the previous 10 years.
+        While iterating over the municipalities it also calculates the 
+        permanent pastures area and the yearly adoption in Portugal, setting
+        the relative model variables. Then from these it calculates the 
+        cumulative adoption in the previosu 10 years and divide these values
+        for the permanent pastures area to get the ones used for the model.
+
+        """
+        census_data_path = (pathlib.Path(__file__).parent.parent
+                            / 'data' / 'census_data_for_abm.csv')
+        census_data = pd.read_csv(census_data_path, index_col='Municipality')
+
+        adoption_data_path = (pathlib.Path(__file__).parent.parent
+                              / 'data'
+                              / '% yearly SBP adoption per municipality.csv')
+        adoption_data = pd.read_csv(adoption_data_path,
+                                    index_col='Municipality')
+        adoption_data.columns = adoption_data.columns.astype(int)
+        adoption_cols_to_drop = [col for col in adoption_data.columns
+                                 if col >= self._year]
+        adoption_data.drop(adoption_cols_to_drop, axis=1, inplace=True)
+
+        pastures_data_path = (pathlib.Path(__file__).parent.parent
+                              / 'data'
+                              / 'municipalities_permanent_pastures_area.csv')
+        pastures_data = pd.read_csv(pastures_data_path,
+                                    index_col='Municipality')
+
+        perm_pastures_ha_tot = 0
+        yearly_adoption_ha_tot = pd.Series(0.,
+                                           index=np.arange(1995, self._year))
+        for munic in municipalities:
+            munic_name = munic.Municipality
+            try:
+                munic_census_data = census_data.loc[munic_name]
+            except KeyError:
+                print("Census data for the municipality of",
+                      munic_name, "are missing.")
+            try:
+                munic_pastures_data = pastures_data.loc[munic_name,
+                                                        'pastures_area_munic']
+            except KeyError:
+                print("Pastures data for the municipality of",
+                      munic_name, "are missing.")
+            try:
+                munic_adoption_data = adoption_data.loc[munic_name]
+            except KeyError:
+                print("Adoption data for the municipality of",
+                      munic_name, "are missing.")
+
+            munic.census_data = munic_census_data
+            munic.perm_pastures_ha = munic_pastures_data
+            munic.yearly_adoption = munic_adoption_data
+            munic.set_cumul_adoption_10y(self._year)
+
+            munic.yearly_adoption_ha = (
+                munic.yearly_adoption * munic.perm_pastures_ha
+                )
+            munic.cumul_adoption_10y_ha = (
+                munic.cumul_adoption_10y * munic.perm_pastures_ha
+                )
+            
+            perm_pastures_ha_tot += munic.perm_pastures_ha
+            yearly_adoption_ha_munic = (
+                munic.yearly_adoption * munic.perm_pastures_ha
+                )
+            yearly_adoption_ha_tot += yearly_adoption_ha_munic
+
+        self.perm_pastures_ha_port = perm_pastures_ha_tot
+        self.yearly_adoption_ha_port = yearly_adoption_ha_tot
+        self.cumul_adoption_10y_ha_port = (
+            self.yearly_adoption_ha_port.loc[
+                (self.year - 10) : self.year
+                ].sum()
+            )
+        self.adoption_pr_y_port = (
+            self.yearly_adoption_ha_port.loc[self.year - 1]
+            / self.perm_pastures_ha_port
+            )
+        self.cumul_adoption_10_y_pr_y_port = (
+            self.cumul_adoption_10y_ha_port
+            / self.perm_pastures_ha_port)
 
     def _initialize_environments(self):
         """
@@ -175,16 +300,7 @@ class SBPAdoption(mesa.Model):
         - Instatiate for each Municipality the relative MunicipalityEnvironment
           object and set it as an attribute of the Municipality
 
-        Returns
-        -------
-        None.
-
         """
-        # climate_data_path = (pathlib.Path(__file__).parent.parent
-        #                            / 'data'
-        #                            / 'municipalities_climate_final.csv')
-        # climate_data = pd.read_csv(climate_data_path,
-        #                            index_col=['Municipality', 'Year'])
         climate_data_path = (pathlib.Path(__file__).parent.parent
                              / 'data'
                              / 'municipalities_average_climate_final.csv')
@@ -214,6 +330,11 @@ class SBPAdoption(mesa.Model):
                 munic_average_climate, munic_soil)
             munic.environment = environment
 
+    def _retrieve_ml_features(self, path):
+        with open(path) as inputfile:
+            rd = csv.reader(inputfile)
+            return list(rd)[0]
+
     # The following methods are not used during the initiation of the model
 
     def step(self):
@@ -221,7 +342,40 @@ class SBPAdoption(mesa.Model):
         Step method of the model.
 
         Calls the step methods of the agents added to the schedule.
+        Calls the method to update adoptions attributes regarding Portugal.
 
         """
         self.schedule.step()
+
         # self.datacollector.collect(self)
+
+        self._update_adoption_port()
+
+        self.year += 1
+
+    def _update_adoption_port(self):
+        """
+        Method called by the advance() method to update all the adoption
+        attributes regarding Portugal.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.yearly_adoption_ha_port[self.year] = self.adoption_in_year_port_ha
+        try:
+            adopt_to_remove = self.yearly_adoption_ha_port[self.year - 10]
+        except KeyError:
+            adopt_to_remove = 0
+        self.cumul_adoption_10y_ha_port = (self.cumul_adoption_10y_ha_port
+                                           + self.adoption_in_year_port_ha
+                                           - adopt_to_remove)
+        self.adoption_pr_y_port = (
+            self.adoption_in_year_port_ha / self.perm_pastures_ha_port
+            )
+        self.cumul_adoption_10_y_pr_y_port = (
+            self.cumul_adoption_10y_ha_port / self.perm_pastures_ha_port
+            )
+
+        self.adoption_in_year_port_ha = 0

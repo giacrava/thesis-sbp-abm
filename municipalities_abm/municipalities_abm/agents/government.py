@@ -10,7 +10,7 @@ class Government(mesa.Agent):
 
     Attributes
     ----------
-    sbp_payments : pandas Series
+    sbp_payments : pd Series
         Payment offered to adopt SBP for each year 
 
     Methods
@@ -57,7 +57,7 @@ class Government(mesa.Agent):
 
         """
         try:
-            return self.sbp_payments.loc[year, 'Payment']
+            return self.sbp_payments.loc[year, 'sbp_payment']
         except KeyError:
-            raise KeyError('Payment for ' + self.year + ' not available.'
+            raise KeyError('Payment for ' + str(year) + ' not available.'
                            'Year outside the time span of the model.')

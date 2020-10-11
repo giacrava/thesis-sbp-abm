@@ -8,7 +8,7 @@ class MunicipalityEnvironment:
 
     Attributes
     ----------
-    average_climate : pandas DataFrame
+    average_climate : pandas Series
         Reports data regarding temperatures (in °C) and precicipitation sum (in
         mm / areas of 0.1° side).
 
@@ -18,11 +18,11 @@ class MunicipalityEnvironment:
         """
         Parameters
         ----------  
-        munic_average_climate : pd DataFrame
+        munic_average_climate : pd Series
             DataFrame reporting the average climate of the municipality over
             the period 1995 - 2018.
         
-        munic_soil_data : pd DataFrame
+        munic_soil_data : pd Series
             DataFrame reporting soil data for the municipality.  
 
         """

@@ -6,9 +6,15 @@
 
 from municipalities_abm import model
 
+features_path = "./ml_model/ml_features_for_abm.csv"
+ml_model_path = "./ml_model/best_rnd_for.pkl"
 
-modelSBP = model.SBPAdoption()
-modelSBP.step()
+modelSBP = model.SBPAdoption(ml_features_path=features_path,
+                             ml_model_path = ml_model_path,
+                             initial_year=1996)
+for i in range(1996, 2019):
+    modelSBP.step()
+    print("Step", str(i))
 
 # adoption_out = modelSBP.datacollector.get_agent_vars_dataframe()
 # aggr_adoption_out = modelSBP.datacollector.get_model_vars_dataframe()

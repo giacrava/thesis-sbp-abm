@@ -23,12 +23,11 @@ def map_draw(agent):
     """
 
     portrayal = dict()
-    # if agent.adoptedSBP == 0:
-    #     portrayal["color"] = "Grey"
-    # else:
-    #     portrayal["color"] = "Blue"
-    # return portrayal
-    portrayal["color"] = "Blue"
+    if agent.cumul_adoption_10y_ha == 0:
+        portrayal["color"] = "Grey"
+    else:
+        portrayal["color"] = "Blue"
+    return portrayal
     return portrayal
 
 
