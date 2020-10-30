@@ -50,9 +50,8 @@ class SBPAdoption(mesa.Model):
     """
 
     def __init__(self,
-                 # ml_model_path,
-                 ml_features_path="./ml_model/ml_features_for_abm.csv",
-                 ml_model_path = "./ml_model/ml_model",
+                 ml_features_path="./ml_model/rnd_for_TTFTTF2/features.csv",
+                 ml_model_path="./ml_model/rnd_for_TTFTTF2/model.pkl",
                  initial_year=1996,
                  sbp_payments_path=sbp_payments_path,
                  seed=None):
@@ -80,27 +79,27 @@ class SBPAdoption(mesa.Model):
 
         super().__init__()
 
+        self.schedule = mesa.time.SimultaneousActivation(self)
+        self.grid = mesa_geo.GeoSpace()
+
         if (initial_year < 1996):
             raise ValueError("The model cannot be initialized in a year "
                              "previous to 1996")
         else:
             self._year = initial_year
-        self.schedule = mesa.time.SimultaneousActivation(self)
-        self.grid = mesa_geo.GeoSpace()
+        self._ml_model = joblib.load(ml_model_path)
+        self._ml_features = self._retrieve_ml_features(ml_features_path)
 
-        self.government = self._initialize_governments(sbp_payments_path)
+        self.government = self._initialize_government(sbp_payments_path)
 
         self.perm_pastures_ha_port = None
         self.yearly_adoption_ha_port = None
         self.cumul_adoption_10y_ha_port = None
-        self.adoption_pr_y_port = None  # this and following names can be changed, put like this to resemble the features names
+        self.adoption_pr_y_port = None
         self.cumul_adoption_10_y_pr_y_port = None
         self._initialize_municipalities_and_adoption()
 
         self._initialize_environments()
-
-        self._ml_model = joblib.load(ml_model_path)
-        self._ml_features = self._retrieve_ml_features(ml_features_path)
 
         # Attribute updated by the municipalities to calculate total adoption
         # in the year in Portugal
@@ -138,7 +137,7 @@ class SBPAdoption(mesa.Model):
     def ml_features(self):
         return self._ml_features
 
-    def _initialize_governments(self, sbp_payments_path):
+    def _initialize_government(self, sbp_payments_path):
         """
         Called by the __init__ method.
 
@@ -197,6 +196,7 @@ class SBPAdoption(mesa.Model):
             self.schedule.add(munic)
             munic.get_neighbors_and_pastures_area()
             mappings.municipalities[munic.Municipality] = munic
+
     def _set_munic_attributes_from_data_and_adoption_in_port(
             self,
             municipalities
@@ -346,11 +346,8 @@ class SBPAdoption(mesa.Model):
 
         """
         self.schedule.step()
-
         # self.datacollector.collect(self)
-
         self._update_adoption_port()
-
         self.year += 1
 
     def _update_adoption_port(self):

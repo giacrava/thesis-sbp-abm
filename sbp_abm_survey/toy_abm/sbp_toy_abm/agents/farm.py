@@ -94,6 +94,7 @@ class Farm:
 
         """
         npv_keeping_actual = self.pasture_type.npv_keeping()
+        print("Next!")
         print(npv_keeping_actual)
         npvs_adoption = []
         npvs_differential = []

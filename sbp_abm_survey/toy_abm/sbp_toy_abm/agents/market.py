@@ -11,19 +11,17 @@ class Market(mesa.Agent, abc.ABC):
     pastures.
     Should not be instantiated.
 
-    Attributes
-    ----------
-    discount_rate : float
-        Discount rate for economic calculations
-
     """
 
     @abc.abstractmethod
-    def __init__(self, unique_id, model, discount_rate):
+    def __init__(self, unique_id, model, discount_rate, pastures_costs):
 
         super().__init__(unique_id, model)
         self.discount_rate = discount_rate
-        self.pasture_type = ''
+        pasture_costs = pastures_costs[self.pasture_type]
+        self.installation = pasture_costs['installation']
+        self.maintenance = pasture_costs['maintenance']
+
 
 
 class NaturalPasturesMarket(Market):
@@ -41,19 +39,19 @@ class NaturalPasturesMarket(Market):
 
     """
 
-    def __init__(self, unique_id, model, discount_rate):
+    def __init__(self, unique_id, model, discount_rate, pastures_costs):
         """
         Parameters
         ----------
         discount_rate : float
             Discount rate for economic calculations
+        pastures_costs : dict
+            Mapping of each pasture type to its maintenance and instlallation
+            yearly costs
 
         """
-        super().__init__(unique_id, model, discount_rate)
         self.pasture_type = 'Natural Pasture'
-
-        self.installation = [0]
-        self.maintenance = [-58, 0, 0, 0, 0, -58, 0, 0, 0]
+        super().__init__(unique_id, model, discount_rate, pastures_costs)
 
 
 class SownPermanentPasturesMarket(Market):
@@ -71,16 +69,16 @@ class SownPermanentPasturesMarket(Market):
 
     """
 
-    def __init__(self, unique_id, model, discount_rate):
+    def __init__(self, unique_id, model, discount_rate, pastures_costs):
         """
         Parameters
         ----------
         discount_rate : float
             Discount rate for economic calculations
+        pastures_costs : dict
+            Mapping of each pasture type to its maintenance and instlallation
+            yearly costs
 
         """
-        super().__init__(unique_id, model, discount_rate)
         self.pasture_type = 'Sown Permanent Pasture'
-
-        self.installation = [-727]
-        self.maintenance = [0, -137, 0, -319, 0, -137, 0, -319, 0]
+        super().__init__(unique_id, model, discount_rate, pastures_costs)

@@ -7,7 +7,7 @@ import mesa.time
 import mesa.datacollection
 
 from . import agents
-from .model_inputs import farmers_data, farms_data, payments, discount_rate
+from .model_inputs import farmers_data, farms_data, payments, pastures_costs
 
 
 def get_percentage_adopted(model):
@@ -29,9 +29,10 @@ def get_percentage_adopted(model):
     return percentage_adopted
 
 
-class SBPAdoption(mesa.Model):
+class FLToyABM(mesa.Model):
     """
-    Model for SBP adoption.
+    Model for SBP adoption using Animal Farm survey data and differential
+    perceived NPV with only education as proxy for risk as farmers' behaviour.
 
     Attributes
     ----------
@@ -54,7 +55,8 @@ class SBPAdoption(mesa.Model):
 
     def __init__(self,
                  payments=payments,
-                 discount_rate=discount_rate,
+                 pastures_costs=pastures_costs,
+                 discount_rate=0.05,
                  seed=None):
         """
         Initalization of the model.
@@ -74,14 +76,8 @@ class SBPAdoption(mesa.Model):
 
         self.schedule = mesa.time.RandomActivation(self)
 
-        self._farmers_data = []
-        self._load_farmers_data(farmers_data)
-
-        self._farms_data = []
-        self._load_farms_data(farms_data)
-
         self.pasture_governments = self._initialize_governments(payments)
-        self.markets = self._initialize_markets(discount_rate)
+        self.markets = self._initialize_markets(discount_rate, pastures_costs)
 
         # Pastures instantiation
         self._possible_pastures = []
@@ -90,6 +86,12 @@ class SBPAdoption(mesa.Model):
         self._initialize_pastures()
 
         # Farmers and farms instantiation
+        self._farmers_data = []
+        self._load_farmers_data(farmers_data)
+
+        self._farms_data = []
+        self._load_farms_data(farms_data)
+
         self._replace_strings_with_objects(self._farms_data,
                                            'Pasture',
                                            self._pastures_mapping)
@@ -249,7 +251,7 @@ class SBPAdoption(mesa.Model):
             pasture_governments[obj.pasture_type] = obj
         return pasture_governments
 
-    def _initialize_markets(self, discount_rate):
+    def _initialize_markets(self, discount_rate, pastures_costs):
         """
         Called by the __init__ method.
 
@@ -258,7 +260,8 @@ class SBPAdoption(mesa.Model):
         """
         markets = {}
         for market_subclass in agents.Market.__subclasses__():
-            obj = market_subclass(self.next_id(), self, discount_rate)
+            obj = market_subclass(self.next_id(), self, discount_rate,
+                                  pastures_costs)
             markets[obj.pasture_type] = obj
         return markets
 

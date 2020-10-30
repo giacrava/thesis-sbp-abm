@@ -75,7 +75,6 @@ class NaturalPasture(Pasture):
         cash_flows = self.market.installation + self.market.maintenance
         npv = np.npv(self.market.discount_rate, cash_flows)
         return npv
-        # return self.model.random.randint(1, 5)
 
 
 class AdoptablePasture(Pasture, abc.ABC):
@@ -142,8 +141,6 @@ class SownPermanentPasture(AdoptablePasture):
         expected_maintenance_NP = [
             el * (1 - confidence) for el in current_pasture.market.maintenance
             ]
-        print(expected_maintenance_SBP)
-        print(expected_maintenance_NP)
         expected_maintenance = [
             c_sbp + c_np for c_sbp, c_np in zip(expected_maintenance_SBP,
                                                 expected_maintenance_NP)
@@ -154,7 +151,6 @@ class SownPermanentPasture(AdoptablePasture):
         cash_flows = expected_costs
         for y in range(len(self.government.payments)):
             cash_flows[y] += self.government.payments[y]
-        print(cash_flows)
 
         npv = np.npv(self.market.discount_rate, cash_flows)
         print(npv)

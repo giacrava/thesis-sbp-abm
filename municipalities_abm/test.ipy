@@ -6,13 +6,17 @@
 
 from municipalities_abm import model
 
-features_path = "./ml_model/ml_features_for_abm.csv"
-ml_model_path = "./ml_model/best_rnd_for.pkl"
+ml_model_name = "rnd_for_TTFTTF2"
+ml_folder_path = "./ml_model/" + str(ml_model_name)
+features_path = ml_folder_path + "/features.csv"
+ml_model_path = ml_folder_path + "/model.pkl"
+sbp_payments_path = "./data/sbp_payments.xlsx"
 
 modelSBP = model.SBPAdoption(ml_features_path=features_path,
-                             ml_model_path = ml_model_path,
+                             ml_model_path=ml_model_path,
+                             sbp_payments_path=sbp_payments_path,
                              initial_year=1996)
-for i in range(1996, 2019):
+for i in range(1996, 1998):
     modelSBP.step()
     print("Step", str(i))
 
