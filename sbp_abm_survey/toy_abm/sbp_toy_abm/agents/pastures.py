@@ -153,6 +153,4 @@ class SownPermanentPasture(AdoptablePasture):
             cash_flows[y] += self.government.payments[y]
 
         npv = np.npv(self.market.discount_rate, cash_flows)
-        print(npv)
         return npv
-        # return self.model.random.randint(2, 6)

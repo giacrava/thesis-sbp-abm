@@ -22,6 +22,9 @@ class Farmer(mesa.Agent):
         Education level of the farmer. Used by the farms in NPV calculations
     farm : Farm object
         Farm that the farmer owns
+    differential_npvs : list
+        Reports the differential npvs calculated after the step (collected by
+        the datacollector)
 
     Methods
     ----------
@@ -48,6 +51,8 @@ class Farmer(mesa.Agent):
                          self.model.next_id(),
                          self.model.adoptable_pastures,
                          self.model.farms_data.loc[self.code])
+        
+        self.differential_npvs = None
 
     def step(self):
         """

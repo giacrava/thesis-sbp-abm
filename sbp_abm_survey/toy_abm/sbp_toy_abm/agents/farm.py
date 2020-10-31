@@ -68,6 +68,7 @@ class Farm:
             npvs_differential = self._get_differential_npvs(
                 farm_adoptable_pastures
                 )
+            self.owner.differential_npvs = npvs_differential
 
             if any([npv > 0 for npv in npvs_differential]):
                 max_diff_npv = max(npvs_differential)
@@ -94,8 +95,6 @@ class Farm:
 
         """
         npv_keeping_actual = self.pasture_type.npv_keeping()
-        print("Next!")
-        print(npv_keeping_actual)
         npvs_adoption = []
         npvs_differential = []
         for pasture in farm_adoptable_pastures:

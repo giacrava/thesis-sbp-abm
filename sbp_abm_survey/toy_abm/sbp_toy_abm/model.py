@@ -101,7 +101,9 @@ class FLToyABM(mesa.Model):
         self.datacollector = mesa.datacollection.DataCollector(
             agent_reporters={
                 'FARM_ID': lambda a: a.code,
-                'Pasture': lambda a: a.farm.pasture_type.type},
+                'Farmer education': lambda a: a.education,
+                'Pasture': lambda a: a.farm.pasture_type.type,
+                'Differential ENPV SBP': lambda a:a.differential_npvs[0],},
             model_reporters={
                 'Percentage of adoption': get_percentage_adopted}
                 )
@@ -320,7 +322,6 @@ class FLToyABM(mesa.Model):
         """
         self.schedule.step()
         self.datacollector.collect(self)
-
 
 
 # farmers_data = "../data/FarmersData.xlsx"
