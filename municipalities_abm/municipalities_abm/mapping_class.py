@@ -20,6 +20,7 @@ class Mappings:
     def __init__(self):
 
         self.municipalities = pd.Series()
+        self.environments = pd.Series()
 
     # def from_municipality_get_farms(self, municipality):
     #     """

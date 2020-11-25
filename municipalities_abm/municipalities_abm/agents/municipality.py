@@ -15,7 +15,7 @@ class Municipality(GeoAgent):
         .....
 
     Attributes # TO UPDATE
-    ----------    
+    ----------
     Municipality : str
         Name of the municipality
     District : str
@@ -24,22 +24,22 @@ class Municipality(GeoAgent):
         Names (strings) of the neighboring Municipality objects
     neighbors_perm_pastures_ha : float
         Sum of the permanent pastures area in the neighbouring municipalities
-    census_data : pd.Series
+    census_data : dict
         Value for census variables of the municipality
     perm_pastures_ha : float
         Area of permanent pastures in hectare in the municipality
-    yearly_adoption : pd.Series
+    yearly_adoption : dict
         Adoption of SBP in the municipality per year, divided by the permanent
         pastures area of the municipality
     cumul_adoption_10y : float
         Adoptoin of SBP in the municipality in the last 10 years, divided by
         the permanent pastures area od the municipality
-    yearly_adoption_ha : pd.Series
+    yearly_adoption_ha : dict
         Adoption of SBP in the municipality per year in hectares
     cumul_adoption_10y_ha : float
-        Adoptoin of SBP in the municipality in the last 10 years in hectares   
-    environment : MunicipalityEnvironment object
-        Entity reporting the environmental conditions of the municipality
+        Adoptoin of SBP in the municipality in the last 10 years in hectares  
+    # environment : MunicipalityEnvironment object
+    #     Entity reporting the environmental conditions of the municipality
 
     Methods
     ----------
@@ -63,17 +63,19 @@ class Municipality(GeoAgent):
         # Attributes set during initialization of the municipalities
         self.neighbors = None
         self.neighbors_perm_pastures_ha = None
-        self.census_data = None
+        self.census_data_clsf = None
+        self.census_data_regr = None
         self.perm_pastures_ha = None
 
         self.yearly_adoption = None
         self.cumul_adoption_10y = None
         self.yearly_adoption_ha = None
         self.cumul_adoption_10y_ha = None
+        self.cumul_adoption_tot_ha = None  # For visualization
 
         # Attibutes set during initialization of MunicipalityClimate objects
-        self.environment = None
-        
+        # self.environment = None
+
         # Attributes used to save state before running advance method
         self._adoption_in_year = None
 
@@ -109,8 +111,23 @@ class Municipality(GeoAgent):
         None.
 
         """
-        self.cumul_adoption_10y = self.yearly_adoption.loc[
-            (year-10):year].sum()
+        yearly_adoption_10y = [v for k, v in self.yearly_adoption.items()
+                               if k >= (year - 10)]
+        self.cumul_adoption_10y = sum(yearly_adoption_10y)
+
+    def set_tot_cumul_adoption_ha(self):
+        """
+        Called by the model during instantiation of Municipalities.
+
+        Calculate the total adoption over all the previous years and
+        set the cumul_adoption_tot attribute
+
+        Returns
+        -------
+        None.
+
+        """
+        self.cumul_adoption_tot_ha = sum(self.yearly_adoption_ha.values())
 
     def step(self):
         """
@@ -126,15 +143,22 @@ class Municipality(GeoAgent):
         None.
 
         """
-        ml_input_data = self._retrieve_data(self.model.ml_features,
-                                            self.model.year)
-        self.predict_adoption(self.model.ml_model, ml_input_data)
-    
-    def _retrieve_data(self, features, year):
+        ml_clsf_input_data = self._retrieve_data(self.model.ml_clsf_feats,
+                                                 self.model.year,
+                                                 'clsf')
+        ml_regr_input_data = self._retrieve_data(self.model.ml_regr_feats,
+                                                 self.model.year,
+                                                 'regr')
+        self.predict_adoption(self.model.ml_clsf, ml_clsf_input_data,
+                              self.model.ml_regr, ml_regr_input_data)
+
+    def _retrieve_data(self, features, year, estimator):
         """
         Method to return all the data that need to be passed to the ML model
         to predict the adoption in the year.
-        
+        Estimator has to be "clsf" or "regr" and is required to retrieve the
+        correct census features.
+
         Returns
         -------
         attributes : pd DataFrame
@@ -143,12 +167,9 @@ class Municipality(GeoAgent):
 
         """
         attributes = pd.Series(index=features)
-        # ind_vars = []
 
         # ADOPTION
-        # ind_vars.extend([self.yearly_adoption.at[year - 1],
-        #                  self.cumul_adoption_10y])
-        attributes["adoption_pr_y_munic"] = self.yearly_adoption.at[year - 1]
+        attributes["adoption_pr_y_munic"] = self.yearly_adoption[year - 1]
         attributes["cumul_adoption_10_y_pr_y_munic"] = self.cumul_adoption_10y
         adoption_pr_y_neigh, cumul_adoption_10y_neigh = (
             self._get_neigh_adoption()
@@ -160,42 +181,32 @@ class Municipality(GeoAgent):
         attributes["adoption_pr_y_port"] = self.model.adoption_pr_y_port
         attributes["cumul_adoption_10_y_pr_y_port"] = (
             self.model.cumul_adoption_10_y_pr_y_port
-            )  
-        # ind_vars.extend([adoption_pr_y_neigh, cumul_adoption_10y_neigh])
-        # ind_vars.extend([self.model.adoption_pr_y_port,
-        #                  self.model.cumul_adoption_10_y_pr_y_port])
-
-        attributes.update(self.census_data)
-        attributes['pastures_area_munic'] = self.perm_pastures_ha
-        attributes.update(self.environment.average_climate)
-        attributes.update(self.environment.soil)
-        attributes['sbp_payment'] = (
-            self.model.government.retrieve_payments(year)
             )
+        if 'cumul_adoption_10_y_pr_y_munic_squared' in features:
+            attributes['cumul_adoption_10_y_pr_y_munic_squared'] = (
+                self.model.cumul_adoption_10_y_pr_y_port
+                * self.model.cumul_adoption_10_y_pr_y_port
+                )
+
+        if estimator == 'clsf':
+            attributes.update(self.census_data_clsf)
+        if estimator == 'regr':
+            attributes.update(self.census_data_regr)
+            attributes['sbp_payment'] = (
+                self.model.government.retrieve_payments(year)
+                )
+        attributes['pastures_area_munic'] = self.perm_pastures_ha
+        environment = mappings.environments[self.Municipality]
+        attributes.update(environment.average_climate)
+        # attributes.update(environment.yearly_climate.loc[year-1])
+        attributes.update(environment.soil)
+
         if attributes.isnull().any():
             missing_attr = attributes[attributes.isnull()].index.tolist()
             raise ValueError("The following attributes to input to the machine"
-                             "learning model are missing: "
+                             " learning model are missing: "
                              + ", ".join(missing_attr))
-        
-        # CENSUS DATA
-        # census_data = self.census_data
-        # census_to_exclude = ["individual_prod_autonomous", "agr_time_partial"]
-        # census_data.drop(census_to_exclude, inplace=True)
-        # census_values = list(census_data.values)
-        # census_values.insert(-1, self.perm_pastures_ha)
-        # ind_vars.extend(census_values)
-        # ENVIRONMENTAL DATA
-        # av_climate_data = self.environment.average_climate
-        # climate_to_exclude = ["days_max_t_over_30_average_munic"]
-        # climate_data.drop(climate_to_exclude, inplace=True)
-        # climate_data = list(climate_data.values)
-        # soil_data = list(self.environment.soil.values)
-        # ind_vars.extend(climate_data + soil_data)
-        # print("NEW")
-        # print(len(ind_vars), len(attributes))
-        # for name, attr in zip(attributes.index, ind_vars):
-        #     print(name, attr)
+
         return attributes.to_frame().T
 
     def _get_neigh_adoption(self):
@@ -206,7 +217,7 @@ class Municipality(GeoAgent):
         """
         year = self.model.year
         munic_map = mappings.municipalities
-        adoptions_ha = [munic_map[neigh].yearly_adoption_ha.at[year-1]
+        adoptions_ha = [munic_map[neigh].yearly_adoption_ha[year-1]
                         for neigh in self.neighbors]
         adoption_pr_y_ha = sum(adoptions_ha)
         adoption_pr_y = adoption_pr_y_ha / self.neighbors_perm_pastures_ha
@@ -219,12 +230,18 @@ class Municipality(GeoAgent):
             )
         return adoption_pr_y, cumul_adoption_10y
 
-    def predict_adoption(self, predictor, input_data):
-        pred = predictor.predict(input_data)
-        if pred < 0:
-            raise ValueError("Negative adoption predicted")
-        self._adoption_in_year = pred[0]
-        
+    def predict_adoption(self, classifier, input_clsf, regressor, input_regr):
+        prob_adopt = classifier.predict_proba(input_clsf)[0][1]
+        if self.model.random.uniform(0, 1) < prob_adopt:
+            adoption = regressor.predict(input_regr)
+            if adoption < 0:
+                print("Negative adoption predicted of:", str(adoption))
+                self._adoption_in_year = 0
+            else:
+                self._adoption_in_year = adoption[0]
+        else:
+            self._adoption_in_year = 0
+
     def advance(self):
         """
         Advance method called by the step of the model after the step() methods
@@ -256,5 +273,6 @@ class Municipality(GeoAgent):
         self.cumul_adoption_10y_ha = (
             self.cumul_adoption_10y * self.perm_pastures_ha
             )
+        self.cumul_adoption_tot_ha += self.yearly_adoption_ha[year]
 
         self.model.adoption_in_year_port_ha += self.yearly_adoption_ha[year]
