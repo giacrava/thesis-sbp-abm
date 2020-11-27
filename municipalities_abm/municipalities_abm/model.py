@@ -105,8 +105,10 @@ class SBPAdoption(mesa.Model):
         self.perm_pastures_ha_port = None
         self.yearly_adoption_ha_port = None
         self.cumul_adoption_10y_ha_port = None
+        self.cumul_adoption_tot_ha_port = None
         self.adoption_pr_y_port = None
-        self.cumul_adoption_10_y_pr_y_port = None
+        self.cumul_adoption_10y_port = None
+        self.cumul_adoption_tot_port = None
         self._initialize_municipalities_and_adoption()
 
         self._initialize_environments()
@@ -335,6 +337,7 @@ class SBPAdoption(mesa.Model):
                       munic_name, "are missing.")
             munic.yearly_adoption = dict(munic_adoption_data)
             munic.set_cumul_adoption_10y(self._year)
+            munic.set_tot_cumul_adoption()
 
             munic.yearly_adoption_ha = dict(
                 munic_adoption_data * munic.perm_pastures_ha
@@ -342,7 +345,9 @@ class SBPAdoption(mesa.Model):
             munic.cumul_adoption_10y_ha = (
                 munic.cumul_adoption_10y * munic.perm_pastures_ha
                 )
-            munic.set_tot_cumul_adoption_ha()
+            munic.cumul_adoption_tot_ha = (
+                munic.cumul_adoption_tot * munic.perm_pastures_ha
+                )
 
             perm_pastures_ha_tot += munic.perm_pastures_ha
             yearly_adoption_ha_munic = (
@@ -352,23 +357,32 @@ class SBPAdoption(mesa.Model):
 
         self.perm_pastures_ha_port = perm_pastures_ha_tot
         self.yearly_adoption_ha_port = yearly_adoption_ha_tot
+        self.adoption_pr_y_port = (
+            self.yearly_adoption_ha_port.loc[self.year - 1]
+            / self.perm_pastures_ha_port
+            )
+
         self.cumul_adoption_10y_ha_port = (
             self.yearly_adoption_ha_port.loc[
                 (self.year - 10): self.year
                 ].sum()
             )
-        self.adoption_pr_y_port = (
-            self.yearly_adoption_ha_port.loc[self.year - 1]
+        self.cumul_adoption_10y_port = (
+            self.cumul_adoption_10y_ha_port
             / self.perm_pastures_ha_port
             )
-        self.cumul_adoption_10_y_pr_y_port = (
-            self.cumul_adoption_10y_ha_port
-            / self.perm_pastures_ha_port)
+        self.cumul_adoption_tot_ha_port = (
+            self.yearly_adoption_ha_port.sum()
+            )
+        self.cumul_adoption_tot_port = (
+            self.cumul_adoption_tot_ha_port
+            / self.perm_pastures_ha_port
+            )
 
     def _initialize_environments(self):
         """
         Called by the __init__ method.
-        
+
         - Loads climate and soil data
         - Instatiate for each Municipality the relative MunicipalityEnvironment
           object and set it as an attribute of the Municipality
@@ -450,14 +464,19 @@ class SBPAdoption(mesa.Model):
             adopt_to_remove = self.yearly_adoption_ha_port[self.year - 10]
         except KeyError:
             adopt_to_remove = 0
-        self.cumul_adoption_10y_ha_port = (self.cumul_adoption_10y_ha_port
-                                           + self.adoption_in_year_port_ha
-                                           - adopt_to_remove)
         self.adoption_pr_y_port = (
             self.adoption_in_year_port_ha / self.perm_pastures_ha_port
             )
-        self.cumul_adoption_10_y_pr_y_port = (
+        self.cumul_adoption_10y_ha_port = (self.cumul_adoption_10y_ha_port
+                                           + self.adoption_in_year_port_ha
+                                           - adopt_to_remove)
+        self.cumul_adoption_10y_port = (
             self.cumul_adoption_10y_ha_port / self.perm_pastures_ha_port
+            )
+        self.cumul_adoption_tot_ha_port += self.adoption_in_year_port_ha
+
+        self.cumul_adoption_tot_port = (
+            self.cumul_adoption_tot_ha_port / self.perm_pastures_ha_port
             )
 
         self.adoption_in_year_port_ha = 0

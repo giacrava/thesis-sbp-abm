@@ -71,7 +71,9 @@ class Municipality(GeoAgent):
         self.cumul_adoption_10y = None
         self.yearly_adoption_ha = None
         self.cumul_adoption_10y_ha = None
-        self.cumul_adoption_tot_ha = None  # For visualization
+
+        self.cumul_adoption_tot = None
+        self.cumul_adoption_tot_ha = None  # # For visualization
 
         # Attibutes set during initialization of MunicipalityClimate objects
         # self.environment = None
@@ -115,7 +117,7 @@ class Municipality(GeoAgent):
                                if k >= (year - 10)]
         self.cumul_adoption_10y = sum(yearly_adoption_10y)
 
-    def set_tot_cumul_adoption_ha(self):
+    def set_tot_cumul_adoption(self):
         """
         Called by the model during instantiation of Municipalities.
 
@@ -127,7 +129,7 @@ class Municipality(GeoAgent):
         None.
 
         """
-        self.cumul_adoption_tot_ha = sum(self.yearly_adoption_ha.values())
+        self.cumul_adoption_tot = sum(self.yearly_adoption.values())
 
     def step(self):
         """
@@ -170,23 +172,46 @@ class Municipality(GeoAgent):
 
         # ADOPTION
         attributes["adoption_pr_y_munic"] = self.yearly_adoption[year - 1]
-        attributes["cumul_adoption_10_y_pr_y_munic"] = self.cumul_adoption_10y
-        adoption_pr_y_neigh, cumul_adoption_10y_neigh = (
-            self._get_neigh_adoption()
-            )
-        attributes["adoption_pr_y_neighbours_adj"] = adoption_pr_y_neigh
-        attributes["cumul_adoption_10_y_pr_y_neighbours_adj"] = (
-            cumul_adoption_10y_neigh
-            )
         attributes["adoption_pr_y_port"] = self.model.adoption_pr_y_port
-        attributes["cumul_adoption_10_y_pr_y_port"] = (
-            self.model.cumul_adoption_10_y_pr_y_port
-            )
-        if 'cumul_adoption_10_y_pr_y_munic_squared' in features:
-            attributes['cumul_adoption_10_y_pr_y_munic_squared'] = (
-                self.model.cumul_adoption_10_y_pr_y_port
-                * self.model.cumul_adoption_10_y_pr_y_port
+
+        if "cumul_adoption_10_y_pr_y_munic" in features:
+            attributes["cumul_adoption_10_y_pr_y_munic"] = (
+                self.cumul_adoption_10y
                 )
+            adoption_pr_y_neigh, cumul_adoption_neigh = (
+                self._get_neigh_adoption('10y')
+                )
+            attributes["adoption_pr_y_neighbours_adj"] = adoption_pr_y_neigh
+            attributes["cumul_adoption_10_y_pr_y_neighbours_adj"] = (
+                cumul_adoption_neigh
+                )
+            attributes["cumul_adoption_10_y_pr_y_port"] = (
+                self.model.cumul_adoption_10y_port
+                )
+            if 'cumul_adoption_10_y_pr_y_munic_squared' in features:
+                attributes['cumul_adoption_10_y_pr_y_munic_squared'] = (
+                    self.cumul_adoption_10y
+                    * self.cumul_adoption_10y
+                    )
+        elif "tot_cumul_adoption_pr_y_munic" in features:
+            attributes["tot_cumul_adoption_pr_y_munic"] = (
+                self.cumul_adoption_tot
+                )
+            adoption_pr_y_neigh, cumul_adoption_neigh = (
+                self._get_neigh_adoption('tot')
+                )
+            attributes["adoption_pr_y_neighbours_adj"] = adoption_pr_y_neigh
+            attributes["tot_cumul_adoption_pr_y_neighbours_adj"] = (
+                cumul_adoption_neigh
+                )
+            attributes["tot_cumul_adoption_pr_y_port"] = (
+                self.model.cumul_adoption_tot_port
+                )
+            if 'tot_cumul_adoption_pr_y_munic_squared' in features:
+                attributes['tot_cumul_adoption_pr_y_munic_squared'] = (
+                    self.cumul_adoption_tot
+                    * self.cumul_adoption_tot
+                    )
 
         if estimator == 'clsf':
             attributes.update(self.census_data_clsf)
@@ -209,7 +234,7 @@ class Municipality(GeoAgent):
 
         return attributes.to_frame().T
 
-    def _get_neigh_adoption(self):
+    def _get_neigh_adoption(self, tot_or_10y):
         """
         Calculate and return the adoption of the previous year and the
         cumulaive over 10 years in the neighbouring municipalities.
@@ -222,13 +247,21 @@ class Municipality(GeoAgent):
         adoption_pr_y_ha = sum(adoptions_ha)
         adoption_pr_y = adoption_pr_y_ha / self.neighbors_perm_pastures_ha
 
-        adoptions_10y_ha = [munic_map[neigh].cumul_adoption_10y_ha
-                            for neigh in self.neighbors]
-        cumul_adoption_10y_ha = sum(adoptions_10y_ha)
-        cumul_adoption_10y = (
-            cumul_adoption_10y_ha / self.neighbors_perm_pastures_ha
-            )
-        return adoption_pr_y, cumul_adoption_10y
+        if tot_or_10y == '10y':
+            adoptions_10y_ha = [munic_map[neigh].cumul_adoption_10y_ha
+                                for neigh in self.neighbors]
+            cumul_adoption_10y_ha = sum(adoptions_10y_ha)
+            cumul_adoption = (
+                cumul_adoption_10y_ha / self.neighbors_perm_pastures_ha
+                )
+        if tot_or_10y == 'tot':
+            adoptions_tot_ha = [munic_map[neigh].cumul_adoption_tot_ha
+                                for neigh in self.neighbors]
+            cumul_adoption_tot_ha = sum(adoptions_tot_ha)
+            cumul_adoption = (
+                cumul_adoption_tot_ha / self.neighbors_perm_pastures_ha
+                )
+        return adoption_pr_y, cumul_adoption
 
     def predict_adoption(self, classifier, input_clsf, regressor, input_regr):
         prob_adopt = classifier.predict_proba(input_clsf)[0][1]
@@ -270,6 +303,7 @@ class Municipality(GeoAgent):
         self.cumul_adoption_10y = (self.cumul_adoption_10y
                                    + self._adoption_in_year
                                    - adopt_to_remove)
+        self.cumul_adoption_tot += self._adoption_in_year
         self.cumul_adoption_10y_ha = (
             self.cumul_adoption_10y * self.perm_pastures_ha
             )
