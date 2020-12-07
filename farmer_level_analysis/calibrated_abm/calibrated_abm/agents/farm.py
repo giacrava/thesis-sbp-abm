@@ -16,6 +16,10 @@ class Farm:
         ID of the farm in the farms excel database
     pasture_type : Pasture object
         The pasture that the farm is adopting
+    legal_form : str
+        Legal form of the farm
+    percent_rented_land : float
+        Percentage of farm area that is rented and not owned by the farmer
 
     Methods
     ----------

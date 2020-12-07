@@ -41,7 +41,6 @@ class Farm:
         self.model_adoptable_pastures = model_adoptable_pastures
 
         # Data from database
-        self.pasture_surface = farm_data['PastureSurface']
         self.pasture_type = farm_data['Pasture']
 
     def pastures_adoption_evaluation(self):
