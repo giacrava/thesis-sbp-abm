@@ -2,8 +2,7 @@
 
 from municipalities_abm import model
 from municipalities_abm.custom_transformers import (
-    TransformCensusFeaturesClsf,
-    TransformCensusFeaturesRegr,
+    TransformCensusFeatures,
     TransformClimateFeatures,
     TransformSoilFeatures
     )

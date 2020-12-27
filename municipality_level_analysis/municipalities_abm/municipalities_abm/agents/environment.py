@@ -14,25 +14,19 @@ class MunicipalityEnvironment:
 
     """
 
-    def __init__(self, 
-                 munic_average_climate_data, 
-                 # munic_yearly_climate_data,
+    def __init__(self,
+                 munic_average_climate_data,
                  munic_soil_data):
         """
         Parameters
-        ----------  
+        ----------
         munic_average_climate : pd Series
             Series reporting the average climate of the municipality over
             the period 1995 - 2018.
 
-        # munic_yearly_climate : ....
-        #     MultiIndex reporting the yearly climate of the municipality over
-        #     the period 1995 - 2018.
-        
         munic_soil_data : pd Series
-            Series reporting soil data for the municipality.  
+            Series reporting soil data for the municipality.
 
         """
         self.average_climate = munic_average_climate_data
-        # self.yearly_climate = munic_yearly_climate_data
         self.soil = munic_soil_data

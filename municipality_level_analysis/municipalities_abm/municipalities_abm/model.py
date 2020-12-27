@@ -17,8 +17,7 @@ import mesa_geo
 from . import agents
 from .mapping_class import mappings
 from .model_inputs import sbp_payments_path, clsf_folder_path, regr_folder_path
-from .custom_transformers import (TransformCensusFeaturesClsf,
-                                  TransformCensusFeaturesRegr,
+from .custom_transformers import (TransformCensusFeatures,
                                   TransformClimateFeatures,
                                   TransformSoilFeatures)
 
@@ -296,10 +295,7 @@ class SBPAdoption(mesa.Model):
         census_data_path = (pathlib.Path(__file__).parent.parent
                             / 'data' / 'census_data_for_abm.csv')
         census_data = pd.read_csv(census_data_path, index_col='Municipality')
-        census_data_clsf_tr = TransformCensusFeaturesClsf().fit_transform(
-                census_data
-                )
-        census_data_regr_tr = TransformCensusFeaturesRegr().fit_transform(
+        census_data_tr = TransformCensusFeatures().fit_transform(
                 census_data
                 )
 
@@ -320,20 +316,16 @@ class SBPAdoption(mesa.Model):
         for munic in municipalities:
             munic_name = munic.Municipality
             try:
-                munic_census_data_clsf = census_data_clsf_tr.loc[munic_name]
-                munic_census_data_regr = census_data_regr_tr.loc[munic_name]                
+                munic_census_data = census_data_tr.loc[munic_name]                
             except KeyError:
                 print("Census data for the municipality of",
                       munic_name, "are missing.")
 
             munic.perm_pastures_ha = (
-                munic_census_data_clsf.loc['pastures_area_munic']
+                munic_census_data.loc['pastures_area_munic']
                 )
-            munic.census_data_clsf = dict(
-                munic_census_data_clsf.drop('pastures_area_munic')
-                )
-            munic.census_data_regr = dict(
-                munic_census_data_regr.drop('pastures_area_munic')
+            munic.census_data = dict(
+                munic_census_data.drop('pastures_area_munic')
                 )
 
             try:
@@ -397,23 +389,15 @@ class SBPAdoption(mesa.Model):
         av_climate_data_path = (pathlib.Path(__file__).parent.parent
                                 / 'data'
                                 / 'municipalities_average_climate_final.csv')
-        # yearly_climate_data_path = (pathlib.Path(__file__).parent.parent
-        #                         / 'data'
-        #                         / 'municipalities_yearly_climate_final.csv')
         soil_data_path = (pathlib.Path(__file__).parent.parent
                           / 'data'
                           / 'municipalities_soil_final.csv')
 
         average_climate_data = pd.read_csv(av_climate_data_path,
-                                            index_col=['Municipality'])
+                                           index_col=['Municipality'])
         average_climate_data_tr = TransformClimateFeatures().fit_transform(
             average_climate_data
             )
-        # yearly_climate_data = pd.read_csv(yearly_climate_data_path,
-        #                                   index_col=['Municipality', 'Year'])
-        # average_yearly_data_tr = TransformClimateFeatures().fit_transform(
-        #     yearly_climate_data
-        #     )
         soil_data = pd.read_csv(soil_data_path,
                                 index_col=['Municipality'])
         soil_data_tr = TransformSoilFeatures().fit_transform(soil_data)
@@ -425,11 +409,6 @@ class SBPAdoption(mesa.Model):
             except KeyError:
                 print("Average climate data for the municipality of",
                       munic_name, "are missing.")
-            # try:
-            #     munic_yearly_climate = yearly_climate_data.loc[munic_name]
-            # except KeyError:
-            #     print("Yearly climate data for the municipality of",
-            #           munic_name, "are missing.")                
             try:
                 munic_soil = soil_data_tr.loc[munic_name]
             except KeyError:

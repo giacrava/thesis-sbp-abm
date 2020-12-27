@@ -63,8 +63,7 @@ class Municipality(GeoAgent):
         # Attributes set during initialization of the municipalities
         self.neighbors = None
         self.neighbors_perm_pastures_ha = None
-        self.census_data_clsf = None
-        self.census_data_regr = None
+        self.census_data = None
         self.perm_pastures_ha = None
 
         self.yearly_adoption = None
@@ -73,10 +72,7 @@ class Municipality(GeoAgent):
         self.cumul_adoption_10y_ha = None
 
         self.cumul_adoption_tot = None
-        self.cumul_adoption_tot_ha = None  # # For visualization
-
-        # Attibutes set during initialization of MunicipalityClimate objects
-        # self.environment = None
+        self.cumul_adoption_tot_ha = None  # For visualization
 
         # Attributes used to save state before running advance method
         self._adoption_in_year = None
@@ -170,59 +166,33 @@ class Municipality(GeoAgent):
         """
         attributes = pd.Series(index=features)
 
-        # ADOPTION
+        # Adoption
         attributes["adoption_pr_y_munic"] = self.yearly_adoption[year - 1]
         attributes["adoption_pr_y_port"] = self.model.adoption_pr_y_port
-
-        if "cumul_adoption_10_y_pr_y_munic" in features:
-            attributes["cumul_adoption_10_y_pr_y_munic"] = (
-                self.cumul_adoption_10y
-                )
-            adoption_pr_y_neigh, cumul_adoption_neigh = (
-                self._get_neigh_adoption('10y')
-                )
-            attributes["cumul_adoption_10_y_pr_y_neighbours_adj"] = (
-                cumul_adoption_neigh
-                )
-            attributes["cumul_adoption_10_y_pr_y_port"] = (
-                self.model.cumul_adoption_10y_port
-                )
-            if 'cumul_adoption_10_y_pr_y_munic_squared' in features:
-                attributes['cumul_adoption_10_y_pr_y_munic_squared'] = (
-                    self.cumul_adoption_10y
-                    * self.cumul_adoption_10y
-                    )
-        elif "tot_cumul_adoption_pr_y_munic" in features:
-            attributes["tot_cumul_adoption_pr_y_munic"] = (
-                self.cumul_adoption_tot
-                )
-            adoption_pr_y_neigh, cumul_adoption_neigh = (
-                self._get_neigh_adoption('tot')
-                )
-            attributes["tot_cumul_adoption_pr_y_neighbours_adj"] = (
-                cumul_adoption_neigh
-                )
-            attributes["tot_cumul_adoption_pr_y_port"] = (
-                self.model.cumul_adoption_tot_port
-                )
-            if 'tot_cumul_adoption_pr_y_munic_squared' in features:
-                attributes['tot_cumul_adoption_pr_y_munic_squared'] = (
-                    self.cumul_adoption_tot
-                    * self.cumul_adoption_tot
-                    )
+        adoption_pr_y_neigh, cumul_adoption_neigh = (
+            self._get_neigh_adoption('tot')
+            )
         attributes["adoption_pr_y_neighbours_adj"] = adoption_pr_y_neigh
 
-        if estimator == 'clsf':
-            attributes.update(self.census_data_clsf)
+        attributes["tot_cumul_adoption_pr_y_munic"] = (
+            self.cumul_adoption_tot
+            )
+        attributes["tot_cumul_adoption_pr_y_neighbours_adj"] = (
+            cumul_adoption_neigh
+            )
+        attributes["tot_cumul_adoption_pr_y_port"] = (
+            self.model.cumul_adoption_tot_port
+            )
+
+        # Others
+        attributes.update(self.census_data)
         if estimator == 'regr':
-            attributes.update(self.census_data_regr)
             attributes['sbp_payment'] = (
                 self.model.government.retrieve_payments(year)
                 )
         attributes['pastures_area_munic'] = self.perm_pastures_ha
         environment = mappings.environments[self.Municipality]
         attributes.update(environment.average_climate)
-        # attributes.update(environment.yearly_climate.loc[year-1])
         attributes.update(environment.soil)
 
         if attributes.isnull().any():
