@@ -1,4 +1,0 @@
-conda install fiona pyproj rtree shapely
-pip install mesa-geo
-
-xlrd
